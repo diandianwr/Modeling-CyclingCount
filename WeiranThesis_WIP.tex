@@ -1099,90 +1099,164 @@ As is shown in Table~\ref{tbl:modelresult_weather}-Table~\ref{tbl:modelresult_in
 %
 %\textbf{To do: include model interpretation? Make model recommendation?}
 
-\newpage
-\thispagestyle{empty}
-\mbox{}
-
+% \newpage
+% \thispagestyle{empty}
+% \mbox{}
 
 
 \section{Predicative Model}
 
-In this section, we are interested in a predicative model to estimate the daily bike counts based on weather forecast and other seasonal factors. Model 0 proposed in the earlier Section~\ref{} could be directly deployed for this purpose. However, in order to better account for possible autocorrelaiton patterns that are often observed in the error terms, an Autoregressive Integrated Moving Average (ARIMA) type model is developed for the bike count time series. The results of using both the ARIMA model and the base model are interpreted. Their prediction accuracy is evaluated using both in-sample and out-of-sample validation techniques. A review on the general ARIMA methodolgoy is provided in Section~\ref{arimaintro}.
+In this section, we are interested in developing a predicative model for daily bike demand using weather conditions and seasonal factors as covariates. An accurate predicative model is useful to help transportation administrator to make better-informed decisions/preparations in case of inclement weather or special holidays. To better account for the seasonality, we substitute the \texttt{Weekend} variable in Model 0 with the \texttt{dow} in the following prediction models since we believe \texttt{dow} is able to explain more variation in the predicted data. Next we investigate the prediction results of the four OLS regression-based models as discussed in Section~\ref{sec:choiceofmodel}. To quantify their predicative performance, an out-of-sample root mean squared error is calculated and compared against each other. The actual vs. predicted plot is also used to visualize the predication result. In the last part of this section, a time series analysis approach is adopted to improve the prediction performance. An Autoregressive Integrated Moving Average (ARIMA) model is proposed to better account for autocorrelaiton patterns that are observed in the error terms. The results of ARIMA is interpreted. A review on the general ARIMA methodolgoy is provided in Section~\ref{arimaintro}.
 
-\subsection{ARIMA modeling}
-\textbf{WIP -- standard ARIMA procedure, stationarity test, ACF, PACF, auto.arima, model results}
-Following the Box-Cox approach, we first conducted the square root transformation to the dependent variable and fit a linear regression model with the same model specification as in Model 0. The standard Augemented Dickey-Fuller test and KPSS test are applied to the residuals of the fitted model. Their results are summarized in the following Table~\ref{tbl_stationarytest}. Also shown in the top plot in Figure~\ref{fig:residual_acfpcf}, there is no discernable trend or seasonality in the residual of responses. Combining all these results together, we conclude that the residual of the fitted model is stationary and no differencing is required. 
+\subsection{Predicative Performance Comparison of regression-based models}
+We first use regression based models to predict daily bike volumes through the Fremont bridge. The standard linear regression, exponential model, quadratic model and the Poisson model as described in~\ref{sec:choiceofmodel} are applied. To compare their predictive performance, an out-of-sample validation framework is used: each model is trained using only the first two years' data, and the trained model is then used to predict the third year's bike count and compared to the test data set. The root mean squared error is calculated as follows:
+\begin{equation*}
+\text{rmse} = \sqrt{\frac{1}{N}(\hat{Y}_i - Y_i)^2}
+\end{equation*}
+where $Y_i$ is the actual bike count at date $i$ in the test data set, $\hat{Y}_i$ is the corresponding predicted bike counts, and $N$ is the number of data points in the data set. The root mean squared error of the four proposed models are reported in Table~\ref{tbl:pred4model}.
 
-Recall that an ACF plot shows the autocorrelations which measure the relationship between $y_t$ and $y_{t-k}$ for different values of k.  The PACF measures the relationship between $y_t$ and $y_{t-k}$ after removing the effects of other time lags in between: $1, 2, 3, \hdots, k-1$.
+\begin{table}
+ \centering 
+  \label{tbl:pred4model} 
+\small
+\begin{tabular}{ c | c } 
+\hline 
+  Name & rmse \\ 
+\hline
+  Standard linear regression & 595.05  \\ 
+  Exponential model ($\log{Y}$) & 631.11 \\ 
+  Quadratic model ($\sqrt{Y}$) & 575.89\\ 
+  Poisson model & 585.32 \\
+\hline 
+\end{tabular} 
+\caption{Predication performance on test sets in terms of RMSE, using the first two years' data as training data set} 
+\end{table} 
 
-The data may follows an ARIMA($p,d,0$) model if the ACF and PACF plots of the differenced data show the following patterns:
-\begin{enumerate}
-\item[*] the ACF is exponentially decaying or sinusoidal;
-\item[*] there is a significant spike at lag $p$ in PACF, but none beyond lag $p$.
-\end{enumerate}
+% \textbf{Could also calculate the std of errors, or consider different training/test data sets}
 
-The data may follow an ARIMA($0,d,q$) model if the ACF and PACF plots of the differenced data show the following patterns:
-\begin{enumerate}
-\item[*] the PACF is exponentially decaying or sinusoidal;
-\item[*] there is a significant spike at lag $q$ in ACF, but none beyond lag $q$.
-\end{enumerate}
+Out of the four models, the quadratic model has the smallest RMSE of 575.89. Furthermore, the predicted bike volumes are relatively close to the actual data and most of the variation is predicted, as is shown in Figure~\ref{fig:avpmodel0}, although there are some points that are under-predicted (the bottom left corner). While this error is perhaps too large for many operational uses, observed daily bike volume spans from 0 two 6000 (as is seen in Figure~\ref{fig:avpmodel0}), making a prediction with this level of accuracy is quite useful for strategic decisions about network expansion.
+\begin{figure*}
+\centering
+   \includegraphics[width=0.7\textwidth]{figures/actualvspred} 
+  \caption{Actual vs. predicted daily bike volume. The red line shows actual count is equal to predicted. This plot shows the majority variation is predicted, with some points under-predicted possibly due to special event.}
+  \label{fig:avpmodel0}
+  \vspace{-.5in}
+\end{figure*}
 
-When both $p$ and $q$ are positive, then the plots are not helpful in finding the suitable values of $p$ and $q$.
+
+
+
+\subsection{Time series analysis -- ARIMA modeling}
+
+In this section, we seek to improve the predicative performance of quadratic model by adopting a time series analysis approach. More specifically, an ARIMA type model is proposed to account for the autocorrelation patterns observed in the OLS regression model error terms. Following the Box-Jenkins approach~\cite{Jenkins70}, we first check the stationarity of the model residual errors. As is shown in the top left plot in Figure~\ref{fig:residual_acfpcf}, there is no discernible long-run trend or seasonality in the residual responses. To confirm this, two statistical stationarity tests are conducted: the Augmented Dickey-Fuller (ADF) test and the Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test. Their results are summarized in Table~\ref{tbl:stationarytest}. Using a significant level of 0.01, these two tests suggest the error terms are stationary.
+
+\begin{table}
+ \centering 
+  \label{tbl:stationarytest} 
+\small
+\begin{tabular}{ c | c | c} 
+\hline 
+  Test Name & $p-$value & Null Hypothesis \\ 
+\hline
+  ADF test  & 0.01  &  Non-Stationary \\ 
+  KPSS test & 0.02 & Stationary \\ 
+\hline 
+\end{tabular} 
+\caption{Statistical stationarity tests with their $p-$values and null hypothesis} 
+\vspace{-.2in}
+\end{table} 
+
+The autocorrlation plot (ACF) and partial autocorrelation plot (PACF) are then used to examine any possible autocorrelation in the model residuals, as are shown in Figure~\ref{fig:residual_acfpcf}. Recall that an ACF plot shows the autocorrelation which measure the relationship between $Y_t$ and $Y_{t-k}$ for different values of $k$.  The PACF measures the relationship between $Y_t$ and $Y_{t-k}$ after removing the effects of other time lags in between: $1, 2, 3, \hdots, k-1$. The ACF and PACF plots on the left side suggest there is significant autocorrelation in the error terms.
 
 \begin{figure*}
    \includegraphics[width=1\textwidth]{figures/residual_acfpcf} 
-  \caption{From top to bottom: the residual plots, ACF and PACF of the sqrt model residual.}
+  \caption{From top to bottom: the residual plots, ACF and PACF of the quadratic model with ARIMA error terms (right) and without ARIMA error terms (left).}
   \label{fig:residual_acfpcf}
 \end{figure*}
 
-\textbf{Add the stationary test table!!!!}
 
-The ACF, PACF plots are then investigated to examine any possible autocorrelation in the model residuals, as is shown in Figure~\ref{fig:residual_acfpcf}. The ACF and PACF plots suggest there is still significant autocorrelation that needs to be accounted for. Since there are two peaks before the PACF falls below the significance threshold, a second order autoregressive term will be included in the final model.
-
-Next, we use \texttt{auto.arima} function in the \texttt{forecast} package in \texttt{R} to automatically determine the best ARIMA model order. The chosen ARIMA model is of the order $(2,0,1)$, which is consistent of our intuition from the PACF plot. 
-
-Finally, we implement the ARIMA$(2,0,1)$ model using \texttt{arima} in the \texttt{forecast} package in \texttt{R}. For comparison, the ARIMA$(1,1,1)$ is also implemented and their results are summarized in Table~\ref{tbl:arimacomp} with model coefficients as well as goodness-of-fit indexes. Note that we include ARIMA$(1,1,1)$ because it is the output of \texttt{auto.arima} if we explicitly allow it to explore the model spaces where differencing is permitted.
-
-As is shown in Table~\ref{tbl:arimacomp}, ARIMA$(2,0,1)$ has a better performance compared to ARIMA$(1,1,1)$ as it has: 1) higher log likelihood, and 2) smaller AIC values. Also, the absence of differencing step is preferred because of the simplicity.
+Noticing that both ACF and PACF of the residual responses (see middle and bottom left plots in Figure{fig:residual_acfpcf}) have persistent spikes that do not disappear after certain lags, this suggest the order of autoregressive and moving average $(p,q)$ are positive. In this case, the ACF and PACF are not helpful in finding the suitable values of $p$ and $q$. To determine the appropriate order of ARIMA terms, we use the \texttt{auto.arima} function of \texttt{forecast} package in \texttt{R} to aid the decision. The result returned by \texttt{auto.arima} is $(2,0,1)$. Using $(2,0,1)$ as the base point, we implemented several variants of ARIMA models and compare their performance in terms of AIC value. It turns out that ARIMA(1,0,1) can achieve a similiar result as order (2,0,1) while keeping a simpler structure. Although complex ARIMA models are capable of producing models without correlation in the residual errors, it is our intent to not complicate model unless necessary so that the our model could have more practical applications and is easy to implement. Therefore, the ARIMA(1,0,1) model will be chosen as the preferred model. The residual responses, ACF and PACF of the ARIMA model is shown on the right side of Figure~\ref{fig:residual_acfpcf}. Incorporating ARMA error structures clearly helps reduce the autocorrelation patterns in the residual errors.
+ 
+Table~\ref{tbl:arimacomparison} reports the estimated coefficients for both the ARIMA model and the base model (quadratic model without ARIMA error terms). The parameter estimates of the autoregressive or moving average terms are statistically significant. The signs of the coefficients are generally in the same in both models. However, the significance and magnitude of the coefficients are systematically larger in the base model (with the exception of \texttt{daylight}, indicating that the effects of weather variables are overestimated when complex serial correlation patterns in the error terms are not accounted for. This observation is consistent with the finding in~\cite{Gallop:2012aa}. The ARIMA model also has a larger $R^2$ and smaller AIC/BIC value, indicating a better fit of the data and superior predicative performance. 
 
 \begin{table}[!htbp] \centering 
-  \caption{ARIMA Results} 
-  \label{tbl:arimacomp} 
+  \caption{Quadratic Model with vs. without ARIMA error terms} 
+  \label{tbl:arimacomparison} 
 \begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} } 
 \\[-4ex]\hline 
 \hline \\[-4ex] 
- & \multicolumn{2}{c}{\textit{Dependent variable: log(BikeCounts)}} \\ 
+ & \multicolumn{2}{c}{\textit{Dependent variable:sqrt(Bike Counts)}} \\ 
 \cline{2-3} 
-\\[-3ex] & \multicolumn{1}{c}{ARIMA(2,0,1)} & \multicolumn{1}{c}{ARIMA(1,1,1)}\\ 
+\\[-3ex] & \multicolumn{1}{c}{Quadratic Model} & \multicolumn{1}{c}{ARIMA(1,0,1)} \\ 
 \hline \\[-1.8ex] 
- ar1 & 1.269^{***}$ $(0.038) & 0.355^{***}$ $(0.033) \\ 
-  ar2 & -0.303^{***}$ $(0.039) &  \\ 
-  ma1 & -0.879^{***}$ $(0.021) & -0.944^{***}$ $(0.017) \\ 
-  intercept & 8.252^{***}$ $(0.136) &  \\ 
-  temperatureMaxSq & 0.0001^{***}$ $(0.00004) & 0.0001^{***}$ $(0.00003) \\ 
-  holiday & -0.681^{***}$ $(0.040) & -0.675^{***}$ $(0.019) \\ 
-  precipProbability & -0.481^{***}$ $(0.024) & -0.479^{***}$ $(0.023) \\ 
-  Wknd & -0.790^{***}$ $(0.016) & -0.787^{***}$ $(0.013) \\ 
-  uw & 0.111^{***}$ $(0.040) & 0.137^{***}$ $(0.019) \\ 
-  daylight & 0.00002 & 0.00002 \\ 
+ TempMaxSq & -0.006^{***}$ $(0.001) & -0.004^{***}$ $(0.001) \\ 
+  TempMax & 1.151^{***}$ $(0.136) & 0.845^{***}$ $(0.172) \\ 
+  Holiday & -14.680^{***}$ $(0.850) & -12.251^{***}$ $(0.751) \\ 
+  PrecipProb & -11.734^{***}$ $(0.473) & -10.459^{***}$ $(0.475) \\ 
+  Weekend & -17.435^{***}$ $(0.316) &  -16.596^{***}$ $(0.306) \\ 
+  UW & 3.272^{***}$ $(0.348) & 2.666^{***}$ $(0.532) \\ 
+  daylight & 1.016^{***}$ $(0.088) & 1.256^{***}$ $(0.131) \\ 
+  AR1 &  & 0.491^{***}$ $(0.062) \\ 
+  MA1 &  & -0.052$ $(0.072) \\ 
+  const. & -3.627$ $(3.796) & 3.873$ $(4.929) \\ 
  \hline \\[-1.8ex] 
-Observations & \multicolumn{1}{c}{1,157} & \multicolumn{1}{c}{1,156} \\ 
-Log Likelihood & \multicolumn{1}{c}{45.906} & \multicolumn{1}{c}{37.183} \\ 
-$\sigma^{2}$ & \multicolumn{1}{c}{0.054} & \multicolumn{1}{c}{0.055} \\ 
-Akaike Inf. Crit. & \multicolumn{1}{c}{-69.812} & \multicolumn{1}{c}{-56.366} \\ 
+Observations & \multicolumn{1}{c}{1,157} & \multicolumn{1}{c}{1,157} \\ 
+R$^{2}$ & \multicolumn{1}{c}{0.866} &  \\ 
+Adjusted R$^{2}$ & \multicolumn{1}{c}{0.866} &  \\ 
+Akaike Inf. Crit. & \multicolumn{1}{c}{6986} & \multicolumn{1}{c}{6707} \\ 
+Bayesian Inf. Crit. & \multicolumn{1}{c}{7045} &  \\ 
 \hline 
 \hline \\[-1.8ex] 
 \textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
 \end{tabular} 
 \end{table} 
 
-\subsection{Validation of the predicative model}
-\textbf{WIP-AVP, cross validation, both in-sample and out-of-sample, mse, etc).}
-In this section, we are interested to evaluate the predicative power of the two models under consideration: Model 0~\eqref{}, and the ARIMA model~\eqref{}.
+\textbf{Add plotted time series, along with the forecasted values, and 95\% prediction limits on the forecast. Then also plot the actual counts in the 3rd year. Plot as two time series, rather than a scatterplot.}
 
-First of all, we use the entire 3 years' data to train the model and plot the actual data against fitted values, as in Figure~\ref{fig:avp_fitted}.
 
-Second, we use the first 2 years' data to train the model and then use the trained model to predict the 3rd year's bike counts. The actual vs predicted values plots are shown in Figure~\ref{fig:avp_crossvalidate}
+% % Table created by stargazer v.5.2 by Marek Hlavac, Harvard University. E-mail: hlavac at fas.harvard.edu
+% % Date and time: Tue, Apr 26, 2016 - 18:04:46
+% % Requires LaTeX packages: dcolumn 
+% \begin{table}[!htbp] \centering 
+%   \caption{Results} 
+%   \label{} 
+% \begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} } 
+% \\[-1.8ex]\hline 
+% \hline \\[-1.8ex] 
+%  & \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
+% \cline{2-3} 
+% \\[-1.8ex] & \multicolumn{1}{c}{poisson (Bike Counts)} & \multicolumn{1}{c}{count} \\ 
+% \\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)}\\ 
+% \hline \\[-1.8ex] 
+%  temperatureMaxSq & -0.0004^{***}$ $(0.00000) & -0.0004^{***}$ $(0.00000) \\ 
+%   temperatureMax & 0.067^{***}$ $(0.0005) & 0.062^{***}$ $(0.001) \\ 
+%   holiday & -0.266^{***}$ $(0.003) & -0.573^{***}$ $(0.005) \\ 
+%   precipProbability & -0.585^{***}$ $(0.002) & -0.449^{***}$ $(0.002) \\ 
+%   Wknd & -0.325^{***}$ $(0.001) & -0.731^{***}$ $(0.002) \\ 
+%   daylight & 0.056^{***}$ $(0.0003) & 0.036^{***}$ $(0.0004) \\ 
+%   uw & 0.113^{***}$ $(0.001) & 0.131^{***}$ $(0.001) \\ 
+%   locationBGT & -0.885^{***}$ $(0.001) &  \\ 
+%   locationelliott & -0.853^{***}$ $(0.001) &  \\ 
+%   locationI90 & -1.398^{***}$ $(0.002) &  \\ 
+%   locationSpokanebrdg & -1.243^{***}$ $(0.001) &  \\ 
+%   Constant & 4.752^{***}$ $(0.015) & 5.211^{***}$ $(0.017) \\ 
+%  \hline \\[-1.8ex] 
+% Observations & \multicolumn{1}{c}{3,586} & \multicolumn{1}{c}{1,157} \\ 
+% Log Likelihood & \multicolumn{1}{c}{-236,483.600} & \multicolumn{1}{c}{-63,703.540} \\ 
+% Akaike Inf. Crit. & \multicolumn{1}{c}{472,991.200} & \multicolumn{1}{c}{127,423.100} \\ 
+% \hline 
+% \hline \\[-1.8ex] 
+% \textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+% \end{tabular} 
+% \end{table} 
+
+% \subsection{Validation of the predicative model}
+% \textbf{WIP-AVP, cross validation, both in-sample and out-of-sample, mse, etc).}
+% In this section, we are interested to evaluate the predicative power of the two models under consideration: Model 0~\eqref{}, and the ARIMA model~\eqref{}.
+
+% First of all, we use the entire 3 years' data to train the model and plot the actual data against fitted values, as in Figure~\ref{fig:avp_fitted}.
+
+% Second, we use the first 2 years' data to train the model and then use the trained model to predict the 3rd year's bike counts. The actual vs predicted values plots are shown in Figure~\ref{fig:avp_crossvalidate}
 
 %\begin{figure*}
 %\includegraphics[width=1\textwidth]{figures/actualvspred.pdf}
@@ -1197,7 +1271,7 @@ Second, we use the first 2 years' data to train the model and then use the train
 %\label{fig:avp_crossvalidate}
 %\end{figure*}
 
-For comparison of the predicative power, we also include the arima model for the lm model as well. See Figure~\ref{fig:avp_arima1} for cross validation and Figure~\ref{fig:avp_arima2} for fitted values.
+% For comparison of the predicative power, we also include the arima model for the lm model as well. See Figure~\ref{fig:avp_arima1} for cross validation and Figure~\ref{fig:avp_arima2} for fitted values.
 
 
 %\begin{figure*}
@@ -1212,12 +1286,12 @@ For comparison of the predicative power, we also include the arima model for the
 %  \label{fig:avp_arima2}
 %\end{figure*}
 
-\begin{figure}
-\centering
-   \includegraphics[width=0.9\textwidth]{figures/prediction/actualvsfited_arima} 
-  \caption{}
-  \label{fig:arima1}
-\end{figure}
+% \begin{figure}
+% \centering
+%   \includegraphics[width=0.9\textwidth]{figures/prediction/actualvsfited_arima} 
+%   \caption{}
+%   \label{fig:arima1}
+% \end{figure}
 
 %\begin{figure}
 %\centering
@@ -1243,10 +1317,23 @@ For comparison of the predicative power, we also include the arima model for the
 %We are also interested to reveal trend from the data. More specifically, we want to ask this question: after removing all weather and seasonality factors, does the bike count have an upward trend in the past three years? To answer this question, we fit a linear model to the residual of the log model. As is shown in Figure~\ref{fig:trend}, there is a slight upward trend of the bike count in the past three years. Since we are looking at the residual error, the weather and other seasonal factors have already been removed. The red line (linear fit to the residual) has a positive slope indicates the bike count is increasing. However, such increase is very small considering the noise in daily bike count.
 
 
-%% ========== Chapter 5
-% 
-%\chapter{Conclusion}
- 
+% ========== Chapter 5
+
+\chapter{Conclusion and future directions}
+
+Cycling is now becoming an increasingly important mode in a comprehensive transportation system for its physical, social, environmental and economic benefits. The city of Seattle has a vision to design and implement bicycle facilities that are safe and appropriate for riders of all ages and abilities. To achieve this goal, it's crucial for the government stakeholders, policy makers and transportation planners to understand the factors that could drive the bike demand and their predicative impact on bike travel behaviour. This thesis seeks to contribute to our limited and opaque knowledge on this topic.
+
+
+The first contribution of this work is to thoroughly investigate the relationship between daily bicycle ridership with a set of key variables, including weather conditions and seasonal factors. The bike count data is continuously collected at the Fremont Bridge in Seattle for the past three years. It is joined with the daily weather conditions and other seasonal variables to form a rich modeling data set. A systematic analysis is conducted to identify candidate explanatory variables and their appropriate forms should be included in the final model. A regression model is then proposed to adequately capture the relationship between various factors and bike counts. This study, like similiar studies on this topic, confirms that weather conditions and seasonal factors have important impact on bike volumes. The maximum daily temperature and precipitation probability is found to have the most significant effect on bicycle traffic counts. Holiday and Weekend are found to have negative impact on daily ridership. This could be explained by the fact that the bike facility under consideration is mainly utilitarian and less bike traffic is expected during holidays and weekend. With UW in session, more bike traffic will be expected possibly due to the facility's proximity to the University of Washington. Daylight hour, which serves as an indicator of the seasonality, takes account for the variations observed in different seasons. The model coefficients are reported in Table~\ref{tbl:modelresult_weather}-\ref{tbl:modelresult_interaction}, as well as visually interpreted in Figure~\ref{fig:smooth}-\ref{fig:interact}.
+
+One of the major contributions of this work however lies in the nonlinear relationship between temperature/precipitation and bike count which is explicitly modelled and accounted for using the general additive mixture (GAM) model. The squared temperature which is commonly used in the literature can be straightforwardly justified by the smooth function of temperature obtained by the GAM model. In addition, a piecewise linear model for the precipitation probability is recommended by the GAM model. This results confirms that extreme high temperature could reduce bike volumes. It also suggests that utilitarian bikers commuting on Fremont Bridge are likely to be insensitive to rainfall unless the raining probability is very high.
+
+With the exception of~\cite{Gallop:2012aa,Nosal:2014aa}, no other known research has studied the autocorrelation patterns in the bike count data. This research offers an ARIMA-type time series analysis model to account for the autocorrelation in the daily bike volumes, whereas hourly autocorrelation is considered in~\cite{Gallop:2012aa,Nosal:2014aa}. The proposed model is used to predict future bike volumes and its predicative performance is evaluated using the train-test framework. One potential use of the ARIMA model is to assist planners by predicting potential bike traffic fluctuation in case of inclement weather and special events, therefore better accomodate the choices cyclists make under such conditions. 
+
+Future research directions include a further investigation on the relationship between built environment and bike ridership. Factors such as facility accessibility and bike network connectivity are expected to have significant impact on people's choice of cycling. A study on this could potentially shed light to future planning of the bike facilities and funding allocation. Also, while control of the weather and seasons are admittedly beyond the scope of policy makers,
+this research does suggest that planners and policy makers may want to develop strategies that help mitigate the impacts of the natural environment during the winter months. In other words, the delta between warm dry days and cold wet days should be treated as the opportunity frontier. Future research could focus on determining what, if any, programmatic or built interventions could ameliorate unfavorable cold- and wet-weather bicycling conditions.
+
+
 %
 % ==========   Bibliography
 %
