@@ -302,12 +302,12 @@ The main contribution of this thesis are as follows:
 
 (2) Examine and quantify the nonlinear relationship between weather factors between daily bike volume. It has been noticed that there are nonlinear relationships between weather and bike volume~\cite{Ahmed12,Miranda-Moreno:2011aa,Thomas12,Lewin:2011aa}. However, such nonlinearity has not been explicitly modeled and their effects are mostly analyzed using exploratory data analysis. In this thesis, we adopt an General Additive Mixture approach to model the nonlinear relationship and investigate its impact on the variable selection and model specification.
 
-(3) Include interaction terms in the regression model. There are limited number of papers that have included interaction terms in their modeling. In those do consider, attentions are only devoted to certain interactions between humidity and temperature, or temperature and wind speed~\cite{Miranda-Moreno:2011aa. In this thesis, we extend interaction terms to include combination of weather and seasonal variables (e.g., precipitation probability and weekend).
+(3) Include interaction terms in the regression model. There are limited number of papers that have included interaction terms in their modeling. In those do consider, attentions are only devoted to certain interactions between humidity and temperature, or temperature and wind speed~\cite{Miranda-Moreno:2011aa}. In this thesis, we extend interaction terms to include combination of weather and seasonal variables (e.g., precipitation probability and weekend).
 
 \item \textbf{Provide good visualizing to show regression result and test goodness of fit and predictive performance}. Due to the convenience in interpreting quadratic model (showing one percent change in the independent variable results in certain fixed amount of percent change in the dependent variable), counterfactual simulations are conducted to help visualize the effect of changing one variable while controlling others. In order to test the predict performance, this study use two years of data to fit the model and use the model to predict the third year. 
 
 
-\item \textbf{Fit Autoregressive Integrated Moving Average (ARIMA) model to better capture the autocorrelation in the bike count time series, }. With the exception of very few papers~\cite{Gallop:2012aa,Nosal:2014aa}, the majority in the literature assume the daily bike ridership count is independent. In order to develop a good predictive bike volume model, we fit an ARIMA model to account for possible autocorrelation in the daily bike counts. The accuracy of the resulting model is validated using historical data.
+\item \textbf{Fit Autoregressive Integrated Moving Average (ARIMA) model to better capture the autocorrelation in the bike count time series}. With the exception of very few papers~\cite{Gallop:2012aa,Nosal:2014aa}, the majority in the literature assume the daily bike ridership count is independent. In order to develop a good predictive bike volume model, we fit an ARIMA model to account for possible autocorrelation in the daily bike counts. The accuracy of the resulting model is validated using historical data.
 %\item \textbf{Quantitatively characterize the bike ridership growth trend in the past three years}
 %\item \textbf{Continuous vs. Categorical}
 %save for later:  When other factors were held fixed, a 43\% to 50\% increase in ridership could be expected as the temperature doubled; however, the temperature had a negative effect when it was higher than 28$^{\circ}$C and humidity was greater than 60\%. 
@@ -329,11 +329,19 @@ Therefore the relationship between bicycle volume and various factors, with the 
 
 
 
-\section{Data source}
+\section{Cycling Ridership Study}
+
+\textcolor{red}{travel ridership study review(from descriptive to modeling)}
 
 There are two types of data sources than are commonly used to explore the relationship between weather factors and bike travel behavior: 1) Travel survey/census data have been either specifically designed to suit the purpose of the study~\cite{Palma97}  or were broad based travel surveys where data on all travel activity was collected using a successive sample approach over an extended period of time~\cite{Richardson:2000aa}. Bike count data obtained through this type of source is typically used to explain influencing factors such as physical, demographical and socio-economic factors on mode choice~\cite{Parkin:2008aa,Helbich:2014aa}; 2) Observational travel data that is collected either manually or automatically. The manually collected data is usually collected for a specific purpose of the study~\cite{Nankervis99} and over a short period of time. On the other hand, the automatically recorded data is continuously collected by automatic data collection equipment over a long period of time~\cite{Griswold:2011aa, Nosal:2014aa, Miranda-Moreno:2011aa, Thomas:2009aa}. One obvious advantage of the automatic data collection systems is that they usually provide a longer time series of data, which will allow modeling of greater variation in weather/temporal parameters~\cite{Ahmed12}, whereas special purpose surveys are likely to either be of short duration or rely on respondent's recall of their behavior in the past, which is likely more prone to errors~\cite{Palma97}. Supplemented with weather, temporal and other continuous factors, the automatically collected count data is suitable to develop predicative statistical models to forecast bike volume.  
 
-\section{Variable Selection}
+\textcolor{red}{bike count datastudy(aggregate level)}
+
+Moreno and Nosal~\cite{Miranda-Moreno:2011aa} conducted a study using data collected from automatic bicycle loop detectors installed along several prominent bicycle paths in the Montreal area. The continuous count data is aggregated into hourly data. Using this hourly count data, they developed hourly bicycle demand models via both the absolute and relative ridership models. 
+
+\textcolor{red}{bike ridership study review in seattle}
+
+\section{Weather and Seasonal Impact on Bike Count}
 
 A literature review accompanying a recent report by \cite{Bassok:2011aa} identified eleven primary indicators. These included 
 time of day \cite{Schwartz:1999aa}, season \cite{Niemeier:1996aa}, population and employment densities \cite{McCahil:2008aa,Pinjari:2009aa}, land-use mix \cite{Pinjari:2009aa}, bicycle facility type \cite{Hunt:2007aa}, traffic volume \cite{McDonald:2007aa}, rain and temperature \cite{Niemeier:1996aa,Parkin:2008aa}, income \cite{Turner:1998aa}, and age \cite{Hunt:2007aa}. This section outlines the key points made in the literature that are relevant to some of most important variables. 
@@ -348,21 +356,20 @@ Besides weather variables, seasonal factors such as day of week and day light ho
 
 Other comparative studies are also available where bicycle counts are conducted in different cities~\cite{Nosal:2014aa}, and different sensitives to weather are examined \cite{Rose:2011aa}. As for longitudinal studies, \cite{Niemeier:1996aa} finds increased variability for counts conducted in the later months of the year. \cite{Jones:2010aa} conclude that morning peak hours from 6 AM to 9 PM accounts for a consistent 95\% of the total bicycle volumes by hourly count data. 
 
-\section{Modeling Methods}
+\section{Modeling Methods and Prediction}
+\textbf{WIP}
 
-The vast majority of existing literature use regression-type of models to link the bike counts with various weather and seasonal factors. The simple OLS type linear regression models was the most popularly used regression technique~\cite{Jones:2008aa,Jones:2010aa}. Other regression techniques used to model bike counts includes the Poisson model~\cite{Niemeier:1996aa} and negative binomial model~\cite{PeterWeiran16} where overdispersion is observed in the distribution of the count data.  In~\cite{Miranda-Moreno:2011aa} a count model is developed. In the regression type of models, a log transformation of the bike count data is often used to stabilize the variance~\cite{}.
+The vast majority of existing literature use regression-type of models to link the bike counts with various weather and seasonal factors. Standard linear regression with OLS estimation were the most popularly used regression technique~\cite{Jones:2008aa,Jones:2010aa}. Log transformation in linear model is often used to stabilize the variance~\cite{}. Square root transformation is also a frequent used techniques to accommodate heteroscedasticity in the model. Other regression models used to fit bike count data include Poisson model~\cite{Niemeier:1996aa,Miranda-Moreno:2011aa} or negative binomial model~\cite{PeterWeiran16} where overdispersion is observed.  
 
-There are also a limited number of papers that focus on developing time series model for bike counts, i.e., Thomas et. al~\cite{Thomas:2009aa} and Gallop et. al~\cite{Gallop:2012aa}. The work by Gallop et. al~\cite{Gallop:2012aa} adopts a similar time-series approach while incorporating an auto-regressive integrated moving average (ARIMA) analysis. 
+Bike counts (whether it is hourly, daily or weekly recorded) are often associated with time index. However, there are limited number of papers that focus on developing time series model for bike counts, i.e., Thomas et. al~\cite{Thomas:2009aa} and Gallop et. al~\cite{Gallop:2012aa}. The work by Gallop et. al~\cite{Gallop:2012aa} adopts a similar time-series approach while incorporating an auto-regressive integrated moving average (ARIMA) analysis. Compared to the normal OLS regression model, ARIMA approach accommodate  complex autocorrelation patterns of the error terms. The comparison clearly shows that OLS regression method tends to greatly overestimate the effect of weather variables on bicycle counts. 
 
-In~\cite{}, the authors proposes two modeling approach: the absolute relationship approach and the relative relationship approach. The absolute relationship approach models directly the relationship between absolute number of bike counts and various factors, whereas the latter models the relative change of bike counts with the change in factors. 
+Researches are also using different perspective to look at bike models. In~\cite{}, the authors proposes two modeling approach: the absolute relationship approach and the relative relationship approach. The absolute relationship approach models directly the relationship between absolute number of bike counts and various factors, whereas the latter models the relative change of bike counts with the change in factors. 
 
 While some studies make no distinction, several have examined the effects of weather on utilitarian and recreational cycling separately~\cite{Brandenburg07, Hanson77, Thomas12}
 
-\textbf{WIP-Two level modeling}
-%
-%In \cite{Nosal14}, a model is developed to use deviations in daily weather conditions from average conditions to predict deviations in daily cyclist totals from the average daily total. 
+In \cite{Nosal14}, a model is developed to use deviations in daily weather conditions from average conditions to predict deviations in daily cyclist totals from the average daily total. 
 
-A summary of findings from the literature are presented in Table \ref{tb:lit}. These literature together suggest an opportunity for further model development base around long-term automated counts utilizing appropriate statistical methods. How seasonal factors influence bicycle flow needs to be examined in data that last more than a year. One limitation present in much of the past literature is that few discuss goodness of fit of their modeling. Further a model that can better describe and forecast the bicycle count in longitudinal form is necessary to be developed. Models for count data with better estimation methods offer some promise. 
+There aren't many researches on different variables' impact on bike count up to now especially using automatic counters to capture ridership. A summary of important literature with their selection of variables and method are presented in Table \ref{tb:lit}. These literature together suggest an opportunity for further model development base around long-term automated counts utilizing appropriate statistical methods. How seasonal factors influence bicycle flow needs to be examined in data that last more than a year. One limitation present in much of the past literature is that few discuss goodness of fit of their modeling. Further a model that can better describe and forecast the bicycle count in longitudinal form is necessary to be developed. Models for count data with better estimation methods offer some promise. 
 
 \begin{center}
 \begin{scriptsize}
@@ -391,14 +398,6 @@ A summary of findings from the literature are presented in Table \ref{tb:lit}. T
 \end{scriptsize}
 \end{center}
 
-\section{Survey of closely-related papers}
-\textbf{WIP}
-In this section, we survey three papers that are closely related to this thesis with respect to the nature of data collection, variable selection and methodology. They are the work by Moreno and Nosal~\cite{Miranda-Moreno:2011aa}, Ahmed et. al~\cite{Ahmed12}, and Gallop et. al~\cite{Gallop:2012aa}.
-
-Moreno and Nosal~\cite{Miranda-Moreno:2011aa} conducted a study using data collected from automatic bicycle loop detectors installed along several prominent bicycle paths in the Montreal area. The continuous count data is aggregated into hourly data. Using this hourly count data, they developed hourly bicycle demand models via both the absolute and relative ridership models. They conclude that precipitation, temperature and humidity  had significant effect on bicycle ridership and analyze the direct as well as the lagging effects. Several seasonal factors such as hour of the day, day of the week, month of the year are considered.
-
-
-In the work of Gallop et. al~\cite{Gallop:2012aa}, an autoregressive integrated moving average model (ARIMA) was developed and compared to the normal OLS regression model. The ARIMA approach is included to better accomadate the complex autocorrelation patterns of the errror terms. The comparison clearly shows that OLS regression method tends to greatly overestimate the effect of weather variables on bicycle counts. 
 
 \section{Limitations in current literature}
 There are four major limitations in current literature that have been identified and will be address explicitly in this thesis:
@@ -450,18 +449,6 @@ We downloaded and processed these data programmatically using the R programming 
 \subsection{Temporal Data}
 In addition to the variables collected from the above-mentioned two sources, we were also interested in controlling for holidays and whether or not the nearby University of Washington was in session. These data were collected and coded manually from the National Holiday calendar as well as the University of Washington's historic academic calendar.
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.5\textwidth]{figures/daily_hist} \hfill
-    \includegraphics[width=0.5\textwidth]{figures/daily_tscount_plot}
-  \caption{Descriptive visualization of bicycle counts dataset.}
-  \label{fig:descriptives}
-\end{figure}
-
-
-\section{Exploratory Data Analysis}
-\label{sec:eda}
-Figure~\ref{fig:descriptives} provides a visual summary of the processed counts data. Some apparent outliers are visible at the rightmost portion of the histogram. The two highest counts occurred the Monday and Tuesday preceding the beginning of National Bike to Work Month. And the third highest count occurred on National Bike to Work Day.
 
 \section{Ordinary Least Squares Regression}
 The ordinary least squares (OLS) regression is one of the most widely used techniques in Statistics to estimate the unknown parameters. The goal is to minimize the differences between the observed responses and the predicted response given by the linear approximation of the data. The basic linear regression model assumes the following structure:
@@ -546,7 +533,10 @@ where $X_t$ is the vector of regressors and $n_t$ is the an ARIMA($p,d,q$) model
 
 This chapter starts with a systematic, two-step approach to select candidate explanatory variables from the rich original data set.  Secondly, an OLS-based regression model is proposed to relate daily bike counts with chosen variables. Different choices of models are explored and compared with each other regarding their suitabilities to the given data series. Then impact of weather variables, seasonal factors as well as interaction terms are analyzed and interpreted in the context of alternative specifications. Moreover, a Generalized  Additive Mixture model is utilized to explicitly capture the nonlinear relationship between bike counts and temperature/precipitation. All the results are illustrated with easy-to-understand counterfactual simulations. Lastly, an Autoregressive Integrated Moving Average type predicative model is developed to account for possible autocorrelation in error terms. The proposed model is assessed using both in-sample and out-sample validation techniques.
 
-\section{Variable Selection}
+
+\section{Exploratory Data Analysis and Variable Selection}
+%\label{sec:eda}
+%Figure~\ref{fig:descriptives} provides a visual summary of the processed counts data. Some apparent outliers are visible at the rightmost portion of the histogram. The two highest counts occurred the Monday and Tuesday preceding the beginning of National Bike to Work Month. And the third highest count occurred on National Bike to Work Day.
 
 The initial modeling data is assembled as described in Section~\ref{sec:data}, with daily bike count data sourced from City of Seattle, daily weather variables retrieved from \texttt{Forecast.io}, and seasonal factors collected from public information (i.e., national holiday from~\cite{} and UW in session status from~\cite{}). This original data consists of a rich pool of 34 variables, out of which 26 are related to weather variables, 7 are related with seasonal factors and 1 dependent variable being the daily bike counts. The detailed list of original variables is provided in Table~\ref{tbl:listofvariables}.
 
@@ -745,7 +735,7 @@ Note that the Poisson model is also called the log-linear model. It assumes the 
 %where $\text{Count}_t$ is assumed to follow a negative binomial distribution.
 
 \begin{figure*}
-   \includegraphics[width=1\textwidth]{figures/ytrans} 
+   \includegraphics[width=1\textwidth]{figures/y_transform} 
   \caption{Model comparison for different $Y$ transformations}
   \label{fig:y_transform}
 \end{figure*}
@@ -786,7 +776,7 @@ In summary, the quadratic model can best accommodate the original data set: afte
   \label{fig:boxcox}
 \end{figure*}
 
-\section{Model results and discussions}
+\section{Interpretation and Discussions}
 
 In this section, the model results will be discussed and interpreted in great details. The impact of weather variables, seasonal factors, as well as interaction items on bike counts will be illustrated with counterfactual simulations. In particular, the nonlinear relationship between bike counts and weather variables are explicitly investigated and modelled. Its implications to model design is also discussed. 
 
@@ -915,7 +905,8 @@ Figure~\ref{fig:daylightuw} shows that we see a substantial increase in bicycle 
 
 \begin{figure}
 \centering
-   \includegraphics[width=0.7\textwidth]{figures/sim/Wknd} 
+  \includegraphics[width=0.7\textwidth]{figures/sim/Wknd}
+%   \includegraphics[width=0.7\textwidth]{figures/sim/wknd_cat}  
   \caption{Effect of \texttt{weekend} icycle counts, with shaded 95\% confidence regions.}
   \label{fig:weekend}
 \end{figure}
@@ -1175,7 +1166,7 @@ The autocorrlation plot (ACF) and partial autocorrelation plot (PACF) are then u
 \end{figure*}
 
 
-Noticing that both ACF and PACF of the residual responses (see middle and bottom left plots in Figure{fig:residual_acfpcf}) have persistent spikes that do not disappear after certain lags, this suggest the order of autoregressive and moving average $(p,q)$ are positive. In this case, the ACF and PACF are not helpful in finding the suitable values of $p$ and $q$. To determine the appropriate order of ARIMA terms, we use the \texttt{auto.arima} function of \texttt{forecast} package in \texttt{R} to aid the decision. The result returned by \texttt{auto.arima} is $(2,0,1)$. Using $(2,0,1)$ as the base point, we implemented several variants of ARIMA models and compare their performance in terms of AIC value. It turns out that ARIMA(1,0,1) can achieve a similiar result as order (2,0,1) while keeping a simpler structure. Although complex ARIMA models are capable of producing models without correlation in the residual errors, it is our intent to not complicate model unless necessary so that the our model could have more practical applications and is easy to implement. Therefore, the ARIMA(1,0,1) model will be chosen as the preferred model. The residual responses, ACF and PACF of the ARIMA model is shown on the right side of Figure~\ref{fig:residual_acfpcf}. Incorporating ARMA error structures clearly helps reduce the autocorrelation patterns in the residual errors.
+Noticing that both ACF and PACF of the residual responses (see middle and bottom left plots in Figure~\ref{fig:residual_acfpcf}) have persistent spikes that do not disappear after certain lags, this suggest the order of autoregressive and moving average $(p,q)$ are positive. In this case, the ACF and PACF are not helpful in finding the suitable values of $p$ and $q$. To determine the appropriate order of ARIMA terms, we use the \texttt{auto.arima} function of \texttt{forecast} package in \texttt{R} to aid the decision. The result returned by \texttt{auto.arima} is $(2,0,1)$. Using $(2,0,1)$ as the base point, we implemented several variants of ARIMA models and compare their performance in terms of AIC value. It turns out that ARIMA(1,0,1) can achieve a similiar result as order (2,0,1) while keeping a simpler structure. Although complex ARIMA models are capable of producing models without correlation in the residual errors, it is our intent to not complicate model unless necessary so that the our model could have more practical applications and is easy to implement. Therefore, the ARIMA(1,0,1) model will be chosen as the preferred model. The residual responses, ACF and PACF of the ARIMA model is shown on the right side of Figure~\ref{fig:residual_acfpcf}. Incorporating ARMA error structures clearly helps reduce the autocorrelation patterns in the residual errors.
  
 Table~\ref{tbl:arimacomparison} reports the estimated coefficients for both the ARIMA model and the base model (quadratic model without ARIMA error terms). The parameter estimates of the autoregressive or moving average terms are statistically significant. The signs of the coefficients are generally in the same in both models. However, the significance and magnitude of the coefficients are systematically larger in the base model (with the exception of \texttt{daylight}, indicating that the effects of weather variables are overestimated when complex serial correlation patterns in the error terms are not accounted for. This observation is consistent with the finding in~\cite{Gallop:2012aa}. The ARIMA model also has a larger $R^2$ and smaller AIC/BIC value, indicating a better fit of the data and superior predicative performance. 
 
