@@ -321,11 +321,7 @@ The main contribution of this thesis are as follows:
  
 \chapter{Literature Review}
 
-Bicycle ridership in cities is useful for practitioners and researchers to understand safety, travel behavior, and development impacts. 
-
-
-
-Therefore the relationship between bicycle volume and various factors, with the goal to build a predictive model based on this relationship, has been of great interest to researchers over the last decade Among others, weather variables such as temperature and precipitation have long been known to have significant impacts on bike travel demand and travel experience~\cite{Guo07}, since cyclists are fully exposed to outdoor weather conditions. Following the pioneering work by Hanson et al in 1977~\cite{Hanson77}, there have been many studies that attempt to explore the relationship between various weather factors and bicycle volume counts (e.g. \cite{Griswold:2011aa,Fields:2012aa,Niemeier:1996aa,Nosal:2014aa, PeterWeiran16}). With the advent of automatic bike counter that can continuously record the passing bike counts at specific locations, more statistically sophisticated models can be developed to account for more complicated scenarios and offer more explanatory/predicative power. In the following, we first summarize existing literature from three perspectives: data source of bike count, explanatory variable selection, and modeling methodology. Then we review the results of six papers that are most relevant to this thesis. Limitations of existing literature are discussed at the end of this Chapter.
+Bicycle ridership in cities is useful for practitioners and researchers to understand safety, travel behavior, and development impacts. Therefore the relationship between bicycle volume and various factors, with the goal to build a predictive model based on this relationship, has been of great interest to researchers over the last decade.Among others, weather variables such as temperature and precipitation have long been known to have significant impacts on bike travel demand and travel experience~\cite{Guo07}, since cyclists are fully exposed to outdoor weather conditions. Following the pioneering work by Hanson et al in 1977~\cite{Hanson77}, there have been many studies that attempt to explore the relationship between various weather factors and bicycle volume counts (e.g. \cite{Griswold:2011aa,Fields:2012aa,Niemeier:1996aa,Nosal:2014aa, PeterWeiran16}). With the advent of automatic bike counter that can continuously record the passing bike counts at specific locations, more statistically sophisticated models can be developed to account for more complicated scenarios and offer more explanatory/predicative power. In the following, we first summarize existing literature from three perspectives: data source of bike count, explanatory variable selection, and modeling methodology. Then we review the results of six papers that are most relevant to this thesis. Limitations of existing literature are discussed at the end of this Chapter.
 
 
 
@@ -496,36 +492,6 @@ Last but not least, it is also possible to include exogenous regressors in the A
 \[Y_t = \beta_t X_t + n_t\]
 where $X_t$ is the vector of regressors and $n_t$ is the an ARIMA($p,d,q$) model. In other words, the ARIMA($p,d,q$) model is fitted to the errors of the regression of $y$ on $X$ (i.e., the series $y_t - \beta_t X_t$). More details on ARIMA and its implementation could be found in~\cite{Hall11}.
 
-%The \texttt{Arima} function in R supports exogenous regressors in a straightforward way. 
-
-%In practice, it is often recommended to use a combination approach: first use the automated approach \texttt{auto.arima} in \texttt{R} to find a base setting. Then consider a number of perturbed-versions of the base model and pick the one with the best residual and goodness-of-fit (i.e., AIC, BIC, etc.). 
-
-%\begin{enumerate}
-%\item The Akaike's Information Criterion (AIC), the corrected AIC (AICc) and the Bayesian Information Criterion (BIC) calculated in their standard ways can be used to evaluate model performance. Good models are obtained by minimizing either the AIC, AICc or BIC, with AICc being the most used one.
-%\item Check if the residual is white noise. This can be achieved by using the ACF plots of the residuals. If all spikes are within the threshold limits, it indicates that the residuals are behaving like white noise. Also, a portmanteau test returns a large p-value, also suggesting the residuals are white noise. A Ljung-Box test with large p-value can also be used to show that the residuals have no remaining autocorrelations. 
-%\end{enumerate}
-
-
-%\subsection{ARIMA model with exogenous regressors}
-%
-%It is also possible to include covariates in the ARIMA model besides the lagged time series and lagged errors. The mathematical expression for ARIMA with regressors is as follows:
-%\[y_t = \beta_t X_t + n_t\]
-%where $X_t$ is the vector of regressor variables and $n_t$ is the an ARIMA($p,d,q$) model. In other words, the ARIMA($p,d,q$) model is fitted to the errors of the regression of $y$ on $X$ (i.e., the series $y_t - \beta_t X_t$).
-%
-%The \texttt{Arima} function in R supports exogenous regressors in a straightforward way. 
-%
-%
-%\subsection{Summary: ARIMA modeling procedure}
-%
-%The following procedure provides a useful general approach for modeling time series data.
-%\begin{enumerate}
-%\item Plot the data to identify any unusual observations (i.e., outliers)
-%\item Apply a Box-Cox transformation to the data (if necessary) to stabilize the variance.
-%\item If the data are non-stationary: take one or more times of first differences of the data until the data are stationary. Use ACF to test stationarity.
-%\item Choose an appropriate order ($p,d,q$) for ARIMA. This could be done by using a combination approach of automated procedure in R and direct observations of ACF and PACF plots. The best model is chosen according to the smallest AICc.
-%\item Check the residuals by plotting the ACF of the residuals, and doing a portmanteau test of the residuals or the Ljung-Box test. If they do not look like white noise, try a modified model.
-%\item Once the residuals look like white noise, calculate forecasts.
-%\end{enumerate}
 
 % ========== Chapter 4
  
@@ -535,57 +501,19 @@ This chapter starts with a systematic, two-step approach to select candidate exp
 
 
 \section{Exploratory Data Analysis and Variable Selection}
-%\label{sec:eda}
-%Figure~\ref{fig:descriptives} provides a visual summary of the processed counts data. Some apparent outliers are visible at the rightmost portion of the histogram. The two highest counts occurred the Monday and Tuesday preceding the beginning of National Bike to Work Month. And the third highest count occurred on National Bike to Work Day.
+\label{sec:eda}
 
-The initial modeling data is assembled as described in Section~\ref{sec:data}, with daily bike count data sourced from City of Seattle, daily weather variables retrieved from \texttt{Forecast.io}, and seasonal factors collected from public information (i.e., national holiday from~\cite{} and UW in session status from~\cite{}). This original data consists of a rich pool of 34 variables, out of which 26 are related to weather variables, 7 are related with seasonal factors and 1 dependent variable being the daily bike counts. The detailed list of original variables is provided in Table~\ref{tbl:listofvariables}.
-
-\textbf{Insert the list of table}
+The initial modeling data is assembled as described in Section~\ref{sec:data}, with daily bike count data sourced from City of Seattle, daily weather variables retrieved from \texttt{Forecast.io}, and seasonal factors collected from public information (i.e., national holiday from~\cite{holiday} and UW in session status from~\cite{uwcalendar}). This original data consists of a rich pool of 34 variables, out of which 26 are related to weather variables, 7 are related with seasonal factors and 1 dependent variable being the daily bike counts. 
 
 To select a subset of candidate variables that are appropriate for bike count modeling, we adopt a two-step, systematic approach to extract the relevant. First, a high level screening analysis is performed to narrow down the variables to serve our research interests. Then quantitative methods are used to determine which form of the variable should be included in the final model. 
 
 \subsection{Weather variables selection}
-\textbf{WIP -- Explain how the weather variables are selected, literature, research interest, temperature (mean, max, min), precip (prob or amount), wind, humidity?}
+Weather variables have a huge impact on daily bike counts because cyclists are fully exposed to outdoor conditions. Therefore, one of our major goals is to identify relevant weather variables that provide the highest explanatory power for the variation in bike counts. Literature has unanimously agreed that temperature and precipitation are the two main weather determinants for bike ridership~\cite{Nosal:2014aa,Tin:2012aa}. In general, cycle counts increases with temperature. However, with daily-aggregated weather information, decision needs to be made regarding what form of the temperature variable should be used in the model, e.g., the daily maximum temperature or the mean temperature. In the literature, arguments have been made for each case. For example, in the work by Tin Tin et. al~\cite{Tin:2012aa}, the maximum temperature is used because people are most sensitive to the extreme, while in Thomas et. al~\cite{Thomas09}, the mean temperature is used because the authors believe that many cyclists make their trips in the morning, during which the temperature lies closer to the mean. In this study, daily maximum temperature \texttt{MaxTemp}, measured in Fahrenheit, was chosen to represent temperature in part to retain simplicity in the model, in part because there is relatively little daily temperature variation in Seattle due to the moderating effect of large water bodies, and in part because maximum temperature better reflects the conditions during daylight hours when most bicycle trips would occur. This simplification may not be warranted for other locations that experience greater temperature variation than Seattle. 
+% The squared daily maximum temperature is also included to account for potential nonlinear relationship. Such nonlinear relationship is 
 
-Weather variables have a huge impact on daily bike counts because cyclists are fully exposed to outdoor conditions. Therefore, one of our major goals is to identify the relevant weather variables that provide the highest explanatory power for the variation in bike counts. Literature has unanimously agreed that temperature and precipitation are the two main weather determinants for bike ridership~\cite{Nosal:2014aa,Tin:2012aa}. In general, cycle counts increases with temperature. However, with daily-aggregated weather information, decision needs to be made regarding what form of the temperature variable should be used in the model, e.g., the daily maximum temperature or the mean temperature. In the literature, arguments have been made for each case. For example, in the work by Tin Tin et. al~\cite{Tin:2012aa}, the maximum temperature is used because people are most sensitive to the extreme, while in Thomas et. al~\cite{Thomas09}, the mean temperature is used because the authors believe that many cyclists make their trips in the morning, during which the temperature lies closer to the mean.
-
-Precipitation, or rainfall, also have a significant impact on the cycling counts. However, similar to temperature, there are various form of the precipitation variables that could be used in the model, such as the precipitation amount~\cite{Ahmed12}, duration of the precipitation~\cite{Thomas09}, rain presence~\cite{Miranda-Moreno:2011aa}, etc.
+Precipitation, or rainfall, also have a significant impact on the cycling counts. However, similar to temperature, there are various form of the precipitation variables that could be used in the model, such as the precipitation amount~\cite{Ahmed12}, duration of the precipitation~\cite{Thomas09}, rain presence~\cite{Miranda-Moreno:2011aa}, etc. In this study, the precipitation probability \texttt{PrecipProb}, which measures the probability of precipitation for the day, was chosen rather than other alternatives based on the notion that bicyclists might make travel decisions at the beginning of the day based on the likelihood of raining. Given that there is a lot of rain in Seattle, low precipitation probability could be perceived as 'false alarm' by many cyclists. Therefore, cyclists might tend to be insensitive to the rain factor unless the probability is really high.
 
 In the literature, weather variables other than temperature and precipitation have also been identified to have certain levels of influence on cycle counts. In the work of Moreno and Nosal~\cite{Miranda-Moreno:2011aa}, humidity is found to have a negative relationship with cycling. The factor of wind speed is shown to be significant in~\cite{Thomas12}, while in the tests by~\cite{Miranda-Moreno:2011aa} wind speed had no impact on the results. Other variables that have been examined include sunshine~\cite{Thomas12}, cloud coverage~\cite{Hanson77}, dew point~\cite{Schade14,Nosal:2014aa} and visibility~\cite{Thomas09}. Considering that their inconsistent and relatively insignificant impact on cyclist counts, similar weather variables in the original data (\texttt{cloudCover}, \texttt{dewPoint}, \texttt{humidity}, \texttt{moonPhase}, \texttt{visibility}, \texttt{windBearing}, \texttt{windSpeed}) are excluded in further analysis. The \texttt{sunriseTime} and \texttt{sunsetTime} are used to generate the \texttt{daylight} variable, whose impact will be explained in the seasonal factor section. 
-
-
-
-Daily maximum temperature, measured in Fahrenheit, was chosen to
-represent temperature (rather than, for example, substituting or
-adding daily minimum temperature) in part to retain simplicity in the
-model, in part because there is relatively little daily temperature
-variation in Seattle due to the moderating effect of large water
-bodies, and in part because maximum temperature better reflects the
-conditions during daylight hours when most bicycle trips would occur.
-This simplification may not be warranted for other locations that
-experience greater temperature variation than Seattle. The squared daily maximum temperature is also included to account for potential nonlinear relationship.
-
-Maximum precipitation, which measures the maximum inches of
-precipitation that occurred in any hour throughout the day, was chosen
-rather than average precipitation based on the notion that bicyclists
-might make travel decisions based on a likely worst case scenario.
-This assumption is slightly more problematic than our assumptions
-about temperature, in that we do expect bicyclists to be at least
-somewhat sensitive to average conditions or conditions observed at
-their time of departure. As in the case of temperature, this
-simplification would be less justifiable in locations that experience
-greater daily variation in precipitation or in locations that have a
-predictable pattern of precipitation during certain hours.
-
-\begin{figure*}
-   \includegraphics[width=1\textwidth]{figures/matrix1} 
-  \caption{Scatterplot Matrix of covariates in the Group of Precipitation and the Response}
-  \label{fig:precip_corr}
-\end{figure*}
-
-In the scatter matrix Figure~\ref{fig:precip_corr}, one can see the correlation between the probability of precipitation and the response count is -0.452, which is relatively stronger comparing to the other predictors. Furthermore, there exist high correlations between ``precipProbability" and other variables such as ``precipIntensityMax", ``precipIntensity", and ``humidity". Therefore, to avoid collinearity we decided to keep ``precipProbability" in our model and drop ``precipIntensity", ``precipIntensityMax" and ``humidity". In addition, the correla- tion between ``dewpoint? and our response is also relatively high, and the correlation between ``dewpoint" and ``precipProbability" is relatively small. Thus, we decided to keep ``dewpoint" in the pool of covariates as well.
-
-Notice that for ``precipIntensity'' and ``precipIntensityMax'', their distribution is highly right skewed. One could also explore the relationship of bike count verses the log transformed variables.
 
 \begin{figure*}
    \includegraphics[width=1\textwidth]{figures/matrix2} 
@@ -593,39 +521,28 @@ Notice that for ``precipIntensity'' and ``precipIntensityMax'', their distributi
   \label{fig:temp_corr}
 \end{figure*}
 
-In the scatterplot matrix Figure~\ref{fig:temp_corr}, one can see the correlations between each covariate and the response are high, and the correlations between any two covariates are more than 0.9. Therefore, including just one of them should be adequate, and we decided to keep only ``temperatureMax'' because it has the highest correlation with bike counts.
+To confirm our reasoning on the weather variable choices, the correlation scatter matrix is depicted as is shown in Figure~\ref{fig:temp_corr}. One can see that all temperature related variables have similar correlation with count, and very high correlation with each other (more than 0.9). Therefore, to avoid collinearity it is reasonable to keep only \texttt{MaxTemp} because it has the highest correlation with bike counts.  
+
+\begin{figure*}
+   \includegraphics[width=1\textwidth]{figures/matrix1} 
+  \caption{Scatterplot Matrix of covariates in the Group of Precipitation and the Response}
+  \label{fig:precip_corr}
+\end{figure*}
+
+Similarly, in the scatter matrix Figure~\ref{fig:precip_corr}, one can see the correlation between the probability of precipitation and the response count is -0.452, which is relatively stronger comparing to the other predictors. Furthermore, there exist high correlations between 'precipProbability' and other variables such as 'precipIntensityMax', 'precipIntensity', and 'humidity'. Therefore, to avoid collinearity we decided to keep \texttt{PrecipProb} in our model.
+
+The last weather variable we include for further testing is \texttt{icon}, which represents the general weather classification, such as 'clear-day','cloudy','foggy','rainy','windy', etc. The rationale behind this is that bicyclists will make their travel decision based on the general weather description instead of the exact degree for temperature or the inches for precipitation. It serves as the best summary of weather conditions and could potentially reduce the model complexity.
 
 \subsection{Seasonal factors}
-\textbf{WIP-Seasonal factors, literature, research interest (utilitarian, weekend), daylight vs season, dow vs weekend, day number for trend analysis}
+Seasonal factors are also found to have significant impact on bike counts in the literature. In this work, seasonal factors are used to account for temporal patterns and seasonal variations in bike ridership which may be caused by weather, holidays, working schedules and school calendars, etc.
 
-University of Washington in-session status were selected to represent seasonality.
-We also deemed the University of Washington variable important in part
-because of the Fremont Bridge's proximity and connection via the Burke
-Gilman Trail to the University of Washington. We also felt that this
-variable was a suitable proxy for the ``school season,'' which more
-broadly captures whether or not other local schools are in session.
-The academic calendars of the various local schools do not align
-perfectly, however they still overlap substantially with the
-University of Washington, which is itself the largest educational
-institution in the region.
+Daylight hours \texttt{Daylight} (defined as sunset time - sunrise time) was selected to represent seasonality. One possible justification for choosing daylight hours over the calendar-based categorization of season is in part because Seattle’s Pacific Maritime Climate differs substantially from traditional notions of four seasons. Daylight hours also is measured as a continuous value at a finer temporal resolution of one day. Finally, daylight hours adjusts according to latitude, which may make this model estimation procedure and specification more transferable to other sites in the future, perhaps by interacting latitude with daylight hours. For comparison purpose, the \texttt{Season} variable is also kept which can takes value in 'Spring', 'Summer', 'Autumn' and 'Winter'.
 
-Inclusion of the holiday variable was an attempt to account for
-some low outlier counts. Upon inspection of the dataset, Christmas and
-Thanksgiving in particular had very low counts of bicycles relative to
-the days preceding and following. Relatedly, but not accounted for by
-any variable in our model, are some of the high outlier counts. Upon
-inspection, some of the highest counts were observed on National Bike
-to Work Day and on the day of the Fremont Solstice Parade, which
-typically draws large numbers of bicyclists as participants and
-spectators. The omission of such a variable is justified based on the
-few occurrences of high outlier counts, and our desire for this model
-to only include variables that could be collected or straightforwardly
-adapted to other locations.
+University of Washington in-session status \texttt{UW} was selected to represent seasonality. We also deemed the University of Washington variable important in part because of the Fremont Bridge's proximity and connection via the Burke Gilman Trail to the University of Washington. We also felt that this variable was a suitable proxy for the 'school season', which more broadly captures whether or not other local schools are in session. The academic calendars of the various local schools do not align perfectly, however they still overlap substantially with the University of Washington, which is itself the largest educational institution in the region.
 
-Day of the week was added due to its presence in the literature, as
-well as an apparent weekly pattern revealed visually by zooming into
-the timeseries plot. These data were coded as a set of Boolean dummy
-variables, excluding Sunday as the reference category.
+Inclusion of the holiday variable was an attempt to account for some low outlier counts. Upon inspection of the dataset, Christmas and Thanksgiving in particular had very low counts of bicycles relative to the days preceding and following. Relatedly, but not accounted for by any variable in our model, are some of the high outlier counts. Upon inspection, some of the highest counts were observed on National Bike to Work Day and on the day of the Fremont Solstice Parade, which typically draws large numbers of bicyclists as participants and spectators. The omission of such a variable is justified based on the few occurrences of high outlier counts, and our desire for this model to only include variables that could be collected or straightforwardly adapted to other locations.
+
+Day of the week \texttt{dow} was added due to its presence in the literature, as well as an apparent weekly pattern revealed visually by zooming into the time series plot. These data were coded as a set of Boolean dummy variables, excluding Friday as the reference category. In addition, the weekend or not flag \texttt{Weekend} is kept since we are interested in traveling behaviour of utilitarian bicyclists. Big difference could be expected between weekends and weekdays but not so much between individual day of the week. 
 
 
 \begin{figure*}
@@ -643,25 +560,9 @@ variables, excluding Sunday as the reference category.
 \label{fig:cat_bxplot}
 \end{figure*}
 
+The final variable, the day number \texttt{day}, was included so that we could test for a linear trend in bicycling volumes. We created this variable by sequentially numbering (1--1157) the observed counts by day during the study period.
 
-The final variable, the day number, was included so that we could test
-for a linear trend in bicycling volumes. We created this variable by
-sequentially numbering (1--1157) the observed counts by day during the
-study period.
-
-We also draw box plots for each categorical variable against the response daily count of bicycle. From Figure~\ref{fig:cat_bxplot}, we see that across different levels, the means of bike count for all 6 categorical variables are not the same.
-
-%\subsection{Correlation Scatterplot}
-%
-%We then selected the predictors with high absolute correlation and draw several scatterplot matrix to explore their pair-wise relationship. Because of the large number of highly correlated variables, we split them into three groups: one contains all the variables that relate to precipitation; one with all the variables that relate to temperature; and the last group contains the rest of the variables that's highly correlated with bike count.
-
-
-
-
-
-%The above variable selection criteria only considered pair-wise correlation of a predictor and the response. A more rigorous approach is to apply a forward-backward search according to some information criteria. This way we also examine the multicollinearity. We performed both AIC and BIC search, and both of them choose relatively large models than we expected. BIC, which tends to prefer the simpler model, chooses a model with 12 predictors. In addition to the 8 predictors we chose above, BIC's model also included ``temperatureMin'', ``precipIntensity'', ``windBearing'' and ``pressure''. By comparing the $\text{R}^2$ of the two models, we see that excluding the 4 covariates only lost 2\% of the variability explained. Furthermore, our goal is to interpret the effect of the predictors, and having many correlated predictors will make it hard. In conclusion, we choose not to use all the variables that BIC suggested, and our final pool of covariates are ``precipProbability'', ``temperatureMax'', ``holiday'', ``dow'', ``uw'', ``icon''.
-%
-% Out of the set of independent variables retrieved from Forecast.io and the University of Washington, we first selected a initial subset of variables that we felt well reflected our specific research questions. The initial set of variables included in our modelling analysis include those presented and summarized in Table \ref{tb:variables}. Further explanation and justification of these variable choices follow. Note that we will conduct a detailed exploratory data analysis and model specification tests using these variables. Then a final model recommendation will be made.
+Box plots for each categorical seasonal factor against the response daily count of bicycle are depicted in Figure~\ref{fig:cat_bxplot}. From a visual standpoint, we  are able to observe the different bike means corresponding to different seasonal factors. 
 
 \subsection{Summary of this section}
 
@@ -683,10 +584,10 @@ Variable & Description \\
 \texttt{Holiday} & The day was a holiday as recognized by UW (TRUE/FALSE) \\
 \texttt{Weekend} & The day is a weekend (TRUE/FALSE) \\
 \texttt{UW} & The University of Washington was in session (TRUE/FALSE) \\
-\texttt{Season} & Season indicator spring, summer, fall, and winter \\
+\texttt{Season} & Season indicator spring, summer, autumn, and winter \\
 \texttt{icon} & General weather classification, such as ``clear-day'', ``cloudy'', ``foggy'', \\
  & ``rainy'', ``windy'', ``partly-cloudy-day'', ``partly-cloudy-night'' (7 levels)\\
-%Day \# & Sequentially numbered day of study \\
+\texttt{day} & Sequentially numbered day of study \\
 \hline
 \label{tb:variables}
 \end{tabular}
@@ -702,7 +603,7 @@ Since the daily bike count data is non-negative and discrete-valued, the natural
 
 However, there are certain requirements that need to be satisfied for OLS regression models, i.e., homoscedasticity, normality, etc. By examining the daily count data set, it is clearly that some of the key assumptions are violated. Therefore, a nonlinear transformation of the dependent variable is necessary and its right form needs to be determined. Some of the common transformations include logarithm and square root.
 
-To simplify the discussion, we will first fix the independent variables $X$ to be \texttt{TempMax}, \texttt{Holiday}, \texttt{PrecipProb}, \texttt{Weekend}, and \texttt{Daylight}]. Using the vector form as in~\eqref{eqn:olsregression}, we consider the following models: standard linear regression, exponential model (with logarithm transformation), quadratic model (square root transformation) and the Poisson model. Their corresponding regression equations are described in Table~\ref{tbl:choiceofmodel}.
+To simplify the discussion, we will first fix the independent variables $X$ to be \texttt{TempMax}, \texttt{Holiday}, \texttt{PrecipProb}, \texttt{Weekend}, and \texttt{Daylight}. Using the vector form as in~\eqref{eqn:olsregression}, we consider the following models: standard linear regression, exponential model (with logarithm transformation), quadratic model (square root transformation) and the Poisson model. Their corresponding regression equations are described in Table~\ref{tbl:choiceofmodel}.
 \begin{table}
 \begin{center}
 \caption{Candidate models for consideration}
@@ -814,7 +715,7 @@ Similarly, the GAM model suggests a nonlinear relationship between \texttt{Preci
 
 \begin{figure}
 \centering
-   \includegraphics[width=0.7\textwidth]{figures/sim/temperature} 
+   \includegraphics[width=0.7\textwidth]{figures/sim/temperture} 
   \caption{Effect of \texttt{TempMax} on bicycle counts, with shaded 95\% confidence regions.}
   \label{fig:temp}
 \end{figure}
@@ -907,19 +808,26 @@ Figure~\ref{fig:daylightuw} shows that we see a substantial increase in bicycle 
 \centering
   \includegraphics[width=0.7\textwidth]{figures/sim/Wknd}
 %   \includegraphics[width=0.7\textwidth]{figures/sim/wknd_cat}  
-  \caption{Effect of \texttt{weekend} icycle counts, with shaded 95\% confidence regions.}
+  \caption{Effect of \texttt{weekend} on bicycle counts, with shaded 95\% confidence regions.}
   \label{fig:weekend}
 \end{figure}
 
 Figure~\ref{fig:holiday} and Figure~\ref{fig:weekend} shows the impact of the holiday and weekend on the bike counts. In both cases, when the date of interest is a holiday or weekend, there is lower number of bicycle counts compared to a non-holiday, weekend. This strongly suggests that the majority of the bicycle traffic at this location is for utilitarian purpose. 
 
-%\begin{figure}
-%\centering
+% \begin{figure}
+% \centering
 %   \includegraphics[width=0.7\textwidth]{figures/sim/holiday} 
 %  \caption{Effect of \texttt{holiday} on bicycle counts, with shaded 95\% confidence regions.}
 %  \label{fig:holiday}
-%\end{figure}
-%
+% \end{figure}
+
+\begin{figure}
+\centering
+  \includegraphics[width=1\textwidth]{figures/sim/multi} 
+ \caption{Effect of \texttt{holiday} on bicycle counts, with shaded 95\% confidence regions.}
+ \label{fig:multi}
+\end{figure}
+
 
 Several additional alternative seasonal variables are considered for model specifications. In Model 0,  the continuously-valued variable \texttt{daylight} is considered to account for the yearly seasonality (see Figure~\ref{fig:daylight}). In the following, it is replaced by the \texttt{season} which is a dummy variable that take value in 'winter','spring' and 'summer' ('autumn' serves as the reference and thus omitted). The alternative model specification is given by:
 
@@ -930,12 +838,12 @@ Several additional alternative seasonal variables are considered for model speci
 \end{align}
 Model 3 replaces the \texttt{Daylight} hours in Model 0 by the \texttt{Season} . Model 3's parameter estimates, goodness-of-fit metrics are summarized in Table~\ref{tbl:modelresult_seasonal}. All coefficients of the season variables appear to be  statistically significant in Model 3 at the $p<0.01$ level. The adjusted $R^2$ is slightly lower than Model 0. Figure~\ref{fig:season} shows that there is generally more bike counts in summer time than winter.
 
-%\begin{figure}
-%\centering
-%   \includegraphics[width=0.7\textwidth]{figures/sim/season} 
-%  \caption{Effect of \texttt{Season} icycle counts, with shaded 95\% confidence regions.}
-%  \label{fig:season}
-%\end{figure}
+\begin{figure}
+\centering
+  \includegraphics[width=0.7\textwidth]{figures/sim/season} 
+ \caption{Effect of \texttt{Season} on bicycle counts, with shaded 95\% confidence regions.}
+ \label{fig:season}
+\end{figure}
 
 Next we consider the \texttt{Weekend} variable substituted by the day of week variable \texttt{dow}. The use of \texttt{dow} has been documented a lot in the literature~\cite{Miranda-Moreno:2011aa,Ahmed12}. It is included as a dummy variable, such as 'Saturday', 'Sunday','Monday','Tuesday','Wednesday' and 'Thursday' ('Friday' serves as the reference and therefore omitted). It is included to account for the weekly variation in bicycle counts apparent in timeseries plot. The alternative model specification is given by:
 
@@ -1202,7 +1110,13 @@ Bayesian Inf. Crit. & \multicolumn{1}{c}{7045} &  \\
 \end{tabular} 
 \end{table} 
 
-\textbf{Add plotted time series, along with the forecasted values, and 95\% prediction limits on the forecast. Then also plot the actual counts in the 3rd year. Plot as two time series, rather than a scatterplot.}
+Finally, the ARIMA model was used to generate predicted bike volumes for the test data. The results for 2015, the last year in data series, are displayed in Figure~\ref{fig:arimapredict}. The actual (red) and forecasted (green) values are close and the weekly and daily cycles generally match. The 95\% prediction interval on the forecast are depicted as shaded area in Figure~\ref{fig:arimapredict}. 
+
+\begin{figure*}
+   \includegraphics[width=1\textwidth]{figures/prediction/predbytime} 
+  \caption{Plot of actual and predicted counts for 2015 test data with 95\% predcition limits.}
+  \label{fig:arimapredict}
+\end{figure*}
 
 
 % % Table created by stargazer v.5.2 by Marek Hlavac, Harvard University. E-mail: hlavac at fas.harvard.edu
