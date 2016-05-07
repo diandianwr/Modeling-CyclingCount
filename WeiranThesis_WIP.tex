@@ -55,6 +55,8 @@
 \usepackage{epstopdf}
 \usepackage{gensymb}
 \usepackage{tikz}
+\usepackage{caption}
+\usepackage{subcaption}
 \DeclareGraphicsRule{.eps}{pdf}{.pdf}{`epstopdf #1}
 \pdfcompresslevel=9
 
@@ -1192,31 +1194,7 @@ Last but not least, the predicative performance of the ARIMA model is evaluated 
 % For comparison of the predicative power, we also include the arima model for the lm model as well. See Figure~\ref{fig:avp_arima1} for cross validation and Figure~\ref{fig:avp_arima2} for fitted values.
 
 
-%\begin{figure*}
-%   \includegraphics[width=1\textwidth]{figures/actualvspred_arima} 
-%  \caption{Actual vs Predicted plots}
-%  \label{fig:avp_arima1}
-%\end{figure*}
-%
-%\begin{figure*}
-%   \includegraphics[width=1\textwidth]{figures/actualvsfit_arima.pdf} 
-%  \caption{Actual vs Fitted plots}
-%  \label{fig:avp_arima2}
-%\end{figure*}
 
-% \begin{figure}
-% \centering
-%   \includegraphics[width=0.9\textwidth]{figures/prediction/actualvsfited_arima} 
-%   \caption{}
-%   \label{fig:arima1}
-% \end{figure}
-
-%\begin{figure}
-%\centering
-%   \includegraphics[width=0.9\textwidth]{figures/prediction/actualvspred4} 
-%  \caption{}
-%  \label{fig:arima2}
-%\end{figure}
 
 
 \newpage
@@ -1228,12 +1206,24 @@ Last but not least, the predicative performance of the ARIMA model is evaluated 
 
 \chapter{Multiple Locations Analysis}
 
+In this section, we extend our findings in previous chapters and investigate the impact of various weather variables and seasonal factors on the use of bike facilities in multiple locations: Burke-Gilman Trail, Elloitt Bay, I-90 Bridge, Seattle Bridge and Fremont Bridge. Note that the Fremont Bridge is included for the purpose of comparison. This chapter first describes the five locations and their main functionality. Different patterns of the bike volumes are then revealed by examining the data. Finally, the bike data is fitted using Poisson model and the results are interpreted.
+
 \section{Locations Overview}
+
+\begin{figure*}
+  \includegraphics[width=1\textwidth]{figures/5sites/distribution5} 
+ \caption{Distribution of Cycle Count in 5 locations }
+ \label{fig:distribution5}
+\end{figure*}
 
 \section{Bike Volume Comparison}
 
 \section{Model Results}
-add trend
+For each of the five locations, a Poisson model is fitted with the same explanatory variables:
+\texttt{TempMax}, \texttt{TempMaxSq}, \texttt{Holiday}, \texttt{PrecipProb}, \texttt{Weekend}, \texttt{UW} and \texttt{Daylight}. The coefficient estimates as well as goodness-of-fit results are summarized in Table~\ref{tbl:multilocations}.
+
+Without exception, all the proposed explanatory variables have significant impact on the daily bike volumes. The temperature variable has a nonlinear relationship with bike counts, which is indicated by the significance of coefficients for both \texttt{TempMax} and second order term \texttt{TempMaxSq}. Out of the five locations, the I-90 facility is most effected by the precipitation probability \texttt{PrecipProb}. With 10\% increase in \texttt{PrecipProb}, it is expected to have an approximately 8.3\% decrease in daily bike traffic, while for Fremont Bridge, the amount of change in \texttt{PrecipProb} only results in a 4\% decrease. This could be due to the fact that the I-90 bridge have fast-moving motor traffic and riding in a raining day on such road-way condition might be possibly perceived as dangerous by many commuters. The seasonal factor \texttt{Weekend} and \texttt{Holiday} provide a lot of insight to the nature of different bike facilities. It is shown that both \texttt{Weekend} and \texttt{Holiday} have postive impact on the daily bike traffic on Fremont Bridge, Seattle Bridge and Elliott Bay, and negative impact on I-90 and the Burke-Gillman Trail. This confirms that the former three are mainly utilitarian, while the latter two are recreational. Among them, the Fremont Bridge is most sensitive these two factors: there is 50\% less bike traffic on weekends than weekdays, and 40\% less on holidays than non-holidays. This is consistent with the fact that Fremont Bridge serves as the major corridor connecting northern Seattle with downtown Seattle. Other seasonal factors such as UW in session (\texttt{UW}) and daylight hour (\texttt{Daylight}) both have a positive impact on bike traffic for all five sites. For BGT, there is a 9\% increase when UW is in session compared to otherwise, while there is a 8\% increase in bike counts with 1 hour increase in daily daily light hour. Goodness-of-fit results are also provided in Table~\ref{tbl:multilocations} in terms of AIC, log-likelihood and deviance. The Poisson model finds the best fit on the Seattle Bridge with smallest AIC and deviance, and the highest log likelihood. This could be due to the fact there is least overdispersion in the bike count data of Seattle Bridge when compared to other sites, as suggested in Figure~\ref{fig:distribution5}. Counterfactual simulations are further conducted to visualize the impact of different factors (See Figure~\ref{fig:Sim_precip}-Figure~\ref{fig:Sim_wknd}). It is especially helpful to depict the nonlinear relationship between temperature and bike counts, whose interpretation is not straightforward because of the second order term. 
+
 
 \begin{table}
 \caption{Location Comparison}
@@ -1267,10 +1257,57 @@ Num. obs.      & 730           & 730           & 699           & 720           &
 \hline
 \multicolumn{6}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
 \end{tabular}
-\label{table:coefficients}
+\label{tbl:multilocations}
 \end{center}
 \end{table}
 
+
+\begin{figure*}
+  \centering
+    \includegraphics[width=0.6\textwidth]{figures/5sites/Sim_precip} 
+    \label{fig:Sim_precip}
+  \caption{The Impact of Precipitation Probability in 5 locations }
+\end{figure*}
+
+
+\begin{figure*}
+  \centering
+  \includegraphics[width=0.6\textwidth]{figures/5sites/Sim_temp} 
+ \caption{The Impact of TemperatureMax in 5 locations }
+ \label{fig:Sim_temp}
+\end{figure*}
+
+
+\begin{figure*}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/5sites/Sim_daylight} 
+ \caption{The Impact of Daylight in 5 locations }
+ \label{fig:Sim_daylight}
+\end{figure*}
+
+\begin{figure*}
+  \includegraphics[width=1\textwidth]{figures/5sites/Sim_season} 
+ \caption{The Impact of Season in 5 locations }
+ \label{fig:Sim_season}
+\end{figure*}
+
+\begin{figure*}
+  \includegraphics[width=1\textwidth]{figures/5sites/Sim_UW} 
+ \caption{The Impact of whether University is in session in 5 locations }
+ \label{fig:Sim_UW}
+\end{figure*}
+
+\begin{figure*}
+  \includegraphics[width=1\textwidth]{figures/5sites/Sim_wknd} 
+ \caption{The Impact of Weekend and Holiday in 5 locations}
+ \label{fig:Sim_wknd}
+\end{figure*}
+
+\begin{figure*}
+  \includegraphics[width=0.2\textwidth]{figures/5sites/Sim_trend} 
+ \caption{Cylcling Trend from Jan,2013 to Dec,2014 in 5 locations }
+ \label{fig:Sim_trend}
+\end{figure*}
 
 % ========== Chapter 7
 
