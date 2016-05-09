@@ -148,7 +148,7 @@
 %
 \setcounter{page}{-1}
 \abstract{%
-A bikeable environment has been proven to benefit cycler’s heath as well as contribute to a sustainable transportation system. Thus policy makers and urban planners through out the word have been promoting bicycling. City of Seattle in the northwest has been implementing new policies and programs to create a bikeable city and aimed to quadruple ridership by 2030. Empirically confirming such growth in Seattle will help justify current and future investment in bicycle infrastructure and programs in Seattle.  This study uses Seattle metropolitan area cyclist count data to quantify the trend and examine the relationship between several seasonal and weather factors and bicycle ridership. Seasonal and weather variables are investigated and discussed symmetrically as well as how variable should be transformed. And we compared different a regression models to capture the relationship such as non-linearity, discontinuity and interaction between bike count and various factors. Results are interpreted with intuitive visualization using counterfactual simulations. Then a predictive model was proposed to estimate daily count in the future. Autoregressive Integrated Moving Average (ARIMA) model is used to take autocorrelation into account. The predicative performance is proven through cross validation. Finally, we applied the model to data collected at other locations in Seattle.  This research will help policy makers and transportation planners to understand the factors that could drive the bike demand and their predicative impact on bike travel behavior.}
+A bikeable environment has been proven to be beneficial to cyclists' heath as well as a sustainable transportation system. Therefore policy makers and urban planners all over the world have been promoting bicycling. City of Seattle in the northwest has been implementing new policies and programs to create a bikeable city and aimed to quadruple ridership by 2030. Empirically confirming such growth in Seattle will help justify current and future investment in bicycle infrastructure and programs in Seattle.  This study uses Seattle metropolitan area cyclist count data to quantify the trend and examine the relationship between seasonal and weather factors and daily bicycle ridership. First, a systematic approach is taken to extract the candidate explanatory variables and their appropriate form of transformation. Then different choices of models are investigated and compared to best capture the relationship between bike counts and factors. Specifically, non-linearity, discontinuity and interaction items are all taken into account. Results are interpreted with intuitive visualization using counterfactual simulations. Furthermore, a predictive model was proposed to estimate daily count in the future. Autoregressive Integrated Moving Average (ARIMA) model is used to account for the autocorrelation. Its predicative performance is evaluated using cross validation. Finally, we applied the methodology to multiple bike locations in Seattle and identified their unique bicycle travel patterns. This research will help policy makers and transportation planners to better understand the factors that could drive the bike demand and their impact on bike travel behavior.}
 
 %\begin{itemize}
 %\item It describes the use of a specialized
@@ -260,50 +260,61 @@ A bikeable environment has been proven to benefit cycler’s heath as well as co
 \chapter {Introduction}
  
 \section{Background}
-Cycling is a safe, fun and healthy choice of transport tool in urban city environment which can be used for all ages and abilities. It is becoming an increasingly important mode in a comprehensive sustainable transportation system.  A country-wide increase in s bicycling in urban cities has been seen recently.(nationall data?????) Thus, policy makers and urban planners throughout the world have been promoting bicycling in order to create bikeable cities.  
+Cycling is a safe, fun and healthy choice of transportation in urban city environments which can be used for all ages and abilities. It is becoming an increasingly important mode in a comprehensive sustainable transportation system.  A country-wide increase in bicycling in urban cities has been seen recently. %(nationall data?????)% 
+Policy makers and urban planners all over the world have been promoting bicycling in order to create bikeable cities. Thus, understanding and quantifying bike ridership is critical to planners in the further.
 
-A bikeable environment has been proven to have the following benefits. First, it benefits the health of those choosing to bicycle regularly. Active transportation including cycling has been promote by public health professions as a means to improve the health conditions like cardiovascular disease, diabetes, and other chronic diseases, especially to improve children obesity epidemic. Most cities has Safe Routes to Schools Programs within transportation department to encourage kids walking and biking to school~\cite{Skerett01,Colditz97}. Second, riding bike instead of cars could offer substantial economic benefits in urban areas by reducing traffic congestion and energy consumption~\cite{Sener09}, more important it helps build low-carbon and green-growth urban environments by reducing gas emissions, thus contributes to mitigate climate change and global warming issues. Furthermore, improved safety of all roadway users has been shown in studies. For example, risk of injury or death in a collision with motor vehicles declines as more people walk or bicycle~\cite{Turner06,Wittink03}. Bike friendly road design also helps drivers to drive with more cautions. Additionally, biking could promote transport equity, enhance social cohesion and community livability~\cite{Litman07} as it represents a more affordable and accessible alternative to automobiles.
+A bikeable environment has been proven to have the following benefits. First, it benefits the health of those choosing to bicycle regularly. Active transportation including cycling has been promoted by public health professions as a means to improve health conditions like cardiovascular disease, diabetes, other chronic diseases, and especially to improve children obesity epidemic. Most cities have Safe Routes to Schools Programs within their transportation departments to encourage kids walking and biking to school~\cite{Skerett01,Colditz97}. Second, riding bike instead of driving cars could offer substantial economic benefits in urban areas by reducing traffic congestion and energy consumption~\cite{Sener09}. More importantly, it helps build low-carbon and green-growth urban environments by reducing gas emissions, thus mitigating climate change and global warming issues. Furthermore, improved safety of all roadway users has been shown in studies. For example, risk of injury or death in a collision with motor vehicles declines as more people walk or bicycle~\cite{Turner06,Wittink03}. Bike friendly road design also helps drivers to drive with more caution. Additionally, biking could promote transport equity, enhance social cohesion and community livability~\cite{Litman07} as it represents a more affordable and accessible alternative to automobiles.
 
-As such, City of Seattle has been making lots of efforts to promote bicyling in the past 5 years. The Seattle Bicycle Master Plan (BMP) was pasted in 2014 to set a detailed blueprint to design and implement bicycle facilities that are safe and appropriate for riders of all ages and abilities. It expanded bicycle infrastructure (e.g., cycle tracks, bicycle lanes, bicycle parking) as well as implementing new policies and programs (e.g. bike sharing programs, traffic calming, bicycle integration with transit). The updated BMP of 2015 is targeting a quadruple ridership by 2030 with a full coverage of bike facilities in the City by 2030. The plan recommends that 473.5 new or upgraded facilities are to be added to the current existing 134.8 networks. The current cost estimate of full build-out of the bicycle facility projects in Seattle ranges from \$390-\$524 million~\cite{SDOT_BMP15}.
+As such, City of Seattle has been making increased efforts to promote bicyling in the past 5 years. The Seattle Bicycle Master Plan (BMP) was passed in 2014 to set a detailed blueprint to design and implement bicycle facilities that are safe and appropriate for riders of all ages and abilities. It expanded bicycle infrastructure (e.g., cycle tracks, bicycle lanes, bicycle parking) as well as implementing new policies and programs (e.g. bike sharing programs, traffic calming, bicycle integration with transit). The updated BMP of 2015 aims to a quadruple ridership with a full bike facilities coverage in the City by 2030. The plan recommends that 473.5 new or upgraded facilities are to be added to the current existing 134.8 networks. The current cost estimate of full build-out of the bicycle facility projects in Seattle ranges from \$390-\$524 million~\cite{SDOT_BMP15}.
 
 
-With initiatives of such scale, cycle ridership increase is assumed to observe in the last two years and in the future. Therefore, empirically confirming such growth in Seattle will help justify current and future investment in bicycle infrastructure and programs in Seattle. Reliable bike count estimations are essential to determine whether current corridor designs are working well and for future design of appropriate infrastructure that can accommodate bicycles, pedestrians and vehicles safely. 
+With initiatives of this size, an increase in cycle ridership has been observed in the last two years and will be continuing in the future. Therefore, empirically confirming such growth in Seattle will help justify current and future investment in bicycle infrastructure and programs in Seattle. Reliable bike count estimations are essential to determine whether current corridor designs are working well and for future design of appropriate infrastructure that can accommodate bicycles, pedestrians and vehicles safely. 
 Moreover, in order to develop policy and improve relevant infrastructure planning to induce more bicycling, it is becoming more and more critical to understand the determinants of bicycle ridership and their dynamic relationships with temperal factors. 
 
-Some of the identified determinants include physical, demographic, social-economical and cultural factors~\cite{Xing10,Pucher10,Krizek09}, accessibility to bicycle infrastructure~\cite{Voros07}, land use pattern and infrastructure~\cite{Dunlap15}. Although there have been quite rich literature on the bicycle usage, the vast majority of them are focused on topics such as road safety analysis~\cite{Kim07}, impact of built environment~\cite{Pucher10}, socio-demographic factors and policy~\cite{Garrard08,Xing10}. There are relatively few research that investigate the impacts of weather variables and seasonal factors on bicycle volumes. Most researches that exam-ed whether factors are limited in automobiles volume studies?????????????~\cite{Miranda-Moreno:2011aa,Rose:2011aa,Nosal:2014aa,Rose07}. Of the limited studies that do focus on the relationship between bike ridership and weather/seasonal variations, many used manually collected bicycle counts or self-reported survey data based on cyclists' perceptions~\cite{Nankervis99,Winters07,Richardson00,Richardson06} to determine how weather affects people's decision to cycle. Such approach naturally introduces inaccuracy to the result and fails to quantitatively determine how actual bike flows respond to weather conditions. 
+Some of the identified determinants include physical, demographic, social-economical and cultural factors~\cite{Xing10,Pucher10,Krizek09}, accessibility to bicycle infrastructure~\cite{Voros07}, land use pattern and infrastructure~\cite{Dunlap15}. Although there have been quite rich literature on the bicycle usage, the vast majority of them are focused on topics such as road safety analysis~\cite{Kim07}, impact of built environment~\cite{Pucher10}, socio-demographic factors and policy~\cite{Garrard08,Xing10}. There is relatively little research that investigates the impacts of weather variables and seasonal factors on bicycle ridership. Most research that examined weather factors is limited to automobiles studies%?????????????%
+~\cite{Miranda-Moreno:2011aa,Rose:2011aa,Nosal:2014aa,Rose07}. Of the limited studies that do focus on the relationship between bike ridership and weather/seasonal variations, many used manually collected bicycle counts or self-reported survey data based on cyclists' perceptions~\cite{Nankervis99,Winters07,Richardson00,Richardson06} to determine how weather affects people's decision to cycle. Such approach naturally introduces inaccuracy to the result and fails to quantitatively determine how actual bike flows respond to weather conditions. 
 
+%Seattle ranked the fifth with a bicycle commute rates 4.1% in large cities of US ~\cite{LEAGUE OF AMERICAN BICYCLISTS. 70 LARGEST CITIES RANKED BY BIKE COMMUTING. 2013} 
+%As of 2013, the bicycle network in Seattle is over 300 miles, including 78 miles of bicycle and climbing lanes, 92 miles of shared lane pavement markings, 6 miles of neighborhood greenways, 47 miles of multi-use trails
 
 %(put into literature review)
 
 %For those studies using automatically collected data~\cite{Tin:2012aa,Nosal:2014aa}, one common limitation is the lack of an explicit characterization of the nonlinear relationship between weather conditions (e.g., temperature and rainfall) and bike counts, although such nonlinear relationship is identified in many works~\cite{Ahmed12,Miranda-Moreno:2011aa,Thomas12,Lewin:2011aa}. Furthermore, very few work have been done to account for the autocorrelation in the count data time series (with the exception of\cite{Gallop:2012aa,Nosal:2014aa}) and an accurate predicative model based on time series analysis is missing.//
 
-One of the major reasons for the limited number of work on bike ridership modeling may be due to the lack of data. Such lack of data is two-fold: the lack of bicycle count in general and the lack of continuously collected count data. Transportation planning in the US has traditionally focused on automotive traffic but is increasingly turning towards a multi-modal approach in order to accommodate all users. States and municipalities are tasked with annually counting the number of motor vehicles traveling their roads through the federally mandated Highway Performance Monitoring System. Unfortunately, few states and municipalities have formal procedures for counting bicyclists. Without a federal mandate, most agencies forego tracking non-motorized forms of travel, other than perhaps conducting a limited assortment of spot-counts at intersections or trail segments~\cite{Kockelman16}. This approach can result in substantial unmet needs and inappropriate investments and policies, as decision-makers rely on minimal demand data for bike routes. On the other hand, the traditional bike count data are usually collected manually over a short-time period because of labor constraints. However, to adequately describe the effect of weather conditions on bike volumes, continuous automated collection of data over a long span of time is necessary~\cite{Miranda-Moreno:2011aa}. In 2011 SDOT began a new systematic bicycle counts program, with the advent of automated bike counters that are now installed in multiple sites across the City of Seattle, we are now in a good position to adopt a quantitative approach to investigate the relationship between bike ridership and weather conditions and other seasonal factors.
+One of the major reasons for the limited number of work on bike ridership modeling may be due to the lack of data. Such lack of data is two-fold: the lack of bicycle count in general and the lack of continuously collected count data. Transportation planning in the US has traditionally focused on automotive traffic but is increasingly turning towards a multi-modal approach in order to accommodate all users. States and municipalities are tasked with annually counting the number of motor vehicles traveling their roads through the federally mandated Highway Performance Monitoring System. Unfortunately, few states and municipalities have formal procedures for counting bicyclists. Without a federal mandate, most agencies forego tracking non-motorized forms of travel, other than perhaps conducting a limited assortment of spot-counts at intersections or trail segments~\cite{Kockelman16}. This approach can result in substantial unmet needs and inappropriate investments and policies, as decision-makers rely on minimal demand data for bike routes. On the other hand, the traditional bike count data are usually collected manually over a short-time period because of labor constraints. However, to adequately describe the effect of weather conditions on bike volumes, continuous automated collection of data over a long span of time is necessary~\cite{Miranda-Moreno:2011aa}. In 2011 SDOT began a new systematic bicycle counts program, with the advent of automated bike counters that are now installed in multiple sites across the City of Seattle,now there is in efficient data  to investigate the relationship between bike ridership and weather conditions and other seasonal factors.
 
 A robust understanding of how various weather conditions and seasonal factors affect bicycle volumes can be helpful to policy makers, urban planners, and researchers in many aspects~\cite{LAManual}, including: (a) determine existing travel patterns and demand; (b) identify corridors where current use and potential for increased use is high; (c) track trends over time; (d) evaluate the effectiveness of programs and/or facilities to promote biking; (e) identify locations for bicycle facility improvements and design appropriate treatments; (f) measure demographic changes as facilities that increase user comfort and attract a wider range of pedestrians and bicyclists are developed; (g) assess future bicycle travel demand; (h) make informed transportation decisions to prioritize bicycle improvement projects; and (i) appropriately allocate resources for active transportation.
 
 \section{Objectives and contribution of this thesis}
 To contribute to the small body of research literature investigating the impact of weather conditions and seasonal factors on cycle ridership, there are three major objectives in this thesis:
 \begin{enumerate}
-\item \textbf{Provide an systematically study of the different weather variables and seasonal factors and how they influence on daily bike volume.} A systematic, two-level approach is adopted to select variables that have most significant impact on bike ridership. A regression model is proposed to link the explanatory variables with bike counts. The nonlinear relationship between weather and bike counts is explicitly examined and accounted for. The obtained model is interpreted with the aid of counterfactual simulation. 
-\item \textbf{Develop a predictive model to estimate daily bike volume which takes autocorrelation into account.} Preferred model is proposed after model comparison to predict future thus help transportation administrator to make better-informed decisions/preparations in case of inclement weather or special holidays that would result in significant change in bike counts. It will also help reveal multiple aspects of planning implications, such as ability to measure return on investment in bicycle facilities and help identify locations for new facilities. 
-\item \textbf{Quantify the `real' bicycle trip trend after excluding the effect of weather and other temporal/seasonal variations.} This study is useful to Understand ridership at the aggregated level and help determine the current travel patterns/demand, and justify the effectiveness of current and future investments in facilities to promote biking.
+\item \textbf{Provide an systematical study of the different weather variables and seasonal factors and how they influence daily bike volume.} A systematic, two-level approach is adopted to select variables that have most significant impact on bike ridership. A regression model is proposed to link the explanatory variables with bike counts. The nonlinear relationship between weather and bike counts is explicitly examined and accounted for. The obtained model is interpreted with the aid of counterfactual simulation. 
+\item \textbf{Develop a predictive model to estimate daily bike volume which takes autocorrelation into account.} The preferred model is proposed after model comparison to predict future bike ridership and thus help transportation administrator to make better-informed decisions/preparations in case of inclement weather or special holidays that would result in significant change in bike counts. It will also help reveal multiple aspects of planning implications, such as ability to measure return on investment in bicycle facilities and help identify locations for new facilities. 
+\item \textbf{Quantify the real bicycle trip trend after excluding the effect of weather and other temporal/seasonal variations.} This study is useful to understand ridership at the aggregated level and help determine the current travel patterns/demand, and justify the effectiveness of current and future investments in facilities to promote biking.
 \end{enumerate}
 
 The main contribution of this thesis are as follows:
 \begin{enumerate}
-\item \textbf{Identify key explanatory variables for the daily bike counts}. A systematic, two-step approach is extract predictors from the original data set. First, a high level screening is used to narrow down the variable categories we want to include in the model based on research conducted before. Then statistical tests are conducted to determine the specific form of variables should be chosen (i.e., mean vs. maximum of daily temperature).
-\item \textbf{Propose a regression model that well captures the relationship between various factors and bike counts}. 
+\item \textbf{Identify key explanatory variables for the daily bike counts}. A systematic approach will select weather and seasonal predictors. First, a high level screening is used to narrow down the variable categories we want to include in the model based on research conducted before. Then statistical tests are conducted to determine specific variables (i.e., mean vs. maximum of daily temperature) and their transformations.
+\item \textbf{Propose a regression model that can adequately capture the relationship between various factors and bike counts}. 
 
-(1) propose the right transformation of variable to accommodate heteroscedasticity (i.e., varying variance) in the bike count data, Quadratic model with square root transformation is used even though the log transformed linear regression model is predominately used in the literature~\cite{Nosal:2014aa,Thomas09,Ahmed12}. The square root transformation is doing well to stabilize variance 
+(1) Propose the right transformation of variable to accommodate heteroscedasticity (i.e., varying variance) in the bike count data. Quadratic model with square root transformation is used even though the log transformed linear regression model is predominately used in the literature~\cite{Nosal:2014aa,Thomas09,Ahmed12}. The square root transformation is shown to better stabilizes variance.
 
-(2) Examine and quantify the nonlinear relationship between weather factors between daily bike volume. It has been noticed that there are nonlinear relationships between weather and bike volume~\cite{Ahmed12,Miranda-Moreno:2011aa,Thomas12,Lewin:2011aa}. However, such nonlinearity has not been explicitly modeled and their effects are mostly analyzed using exploratory data analysis. In this thesis, we adopt an General Additive Mixture approach to model the nonlinear relationship and investigate its impact on the variable selection and model specification.
+(2) Examine and quantify the nonlinear relationship and weather factors between daily bike volume. It has been noticed that there are nonlinear relationships between weather and bike volume~\cite{Ahmed12,Miranda-Moreno:2011aa,Thomas12,Lewin:2011aa}. However, such nonlinearity has not been explicitly modeled and their effects are mostly analyzed using exploratory data analysis. In this thesis, we adopt an General Additive Mixture approach to model the nonlinear relationship and investigate its impact on the variable selection and model specification.
 
-(3) Include interaction terms in the regression model. There are limited number of papers that have included interaction terms in their modeling. In those do consider, attentions are only devoted to certain interactions between humidity and temperature, or temperature and wind speed~\cite{Miranda-Moreno:2011aa}. In this thesis, we extend interaction terms to include combination of weather and seasonal variables (e.g., precipitation probability and weekend).
+(3) Include interaction terms in the regression model. There are few papers that have included interaction terms in their modeling. In those that do consider, their attention is only devoted to certain interactions between humidity and temperature, or temperature and wind speed~\cite{Miranda-Moreno:2011aa}. In this thesis, we extend interaction terms to include combination of weather and seasonal variables (e.g., precipitation probability and weekend).
 
-\item \textbf{Provide good visualizing to show regression result and test goodness of fit and predictive performance}. Due to the convenience in interpreting quadratic model (showing one percent change in the independent variable results in certain fixed amount of percent change in the dependent variable), counterfactual simulations are conducted to help visualize the effect of changing one variable while controlling others. In order to test the predict performance, this study use two years of data to fit the model and use the model to predict the third year. 
+\item \textbf{Provide good visualization to show the results and goodness of fit of regressions as well as their predictive performance}. Due to the convenience in interpreting quadratic model (showing one percent change in the independent variable results in certain fixed amount of percent change in the dependent variable), counterfactual simulations are conducted to help visualize the effect of changing one variable while controlling others. In order to test the predict performance, this study use two years of data to fit the model and use the model to predict the third year. 
 
 
-\item \textbf{Fit Autoregressive Integrated Moving Average (ARIMA) model to better capture the autocorrelation in the bike count time series}. With the exception of very few papers~\cite{Gallop:2012aa,Nosal:2014aa}, the majority in the literature assume the daily bike ridership count is independent. In order to develop a good predictive bike volume model, we fit an ARIMA model to account for possible autocorrelation in the daily bike counts. The accuracy of the resulting model is validated using historical data.
+\item \textbf{Fit an Autoregressive Integrated Moving Average (ARIMA) model to better capture the autocorrelation in the bike count time serie}. With the exception of very few papers~\cite{Gallop:2012aa,Nosal:2014aa}, the majority of literature assume the daily bike ridership count is a independent and identically distributed random variable. In order to develop a better predictive bike volume model, we fit an ARIMA model to account for possible autocorrelation in the daily bike counts. The accuracy of the resulting model is validated using historical data.
+
+\item \textbf{Compare the different impacts of weather and season on multiple locations and identify their unique bike travel pattern.} This work extend previous methodology to five different bike locations in Seattle and identify their unique travel patterns and sensitivities to the same set of factors. These findings will enhance City of Seattle's ability to determine the actual usage portfolio of bike facilities and identify locations for new facilities.
+
+
+% The bicycle counters on the Fremont Bridge, Spokane Street, and the new 2nd Avenue provide valuable information about the patterns of cycling in Seattle, and an accurate count of the number of cyclists at two of the busiest cycling locations in Seattle. They allow more accurate benchmarking for goals to increase cycling as set forth in the Bicycle Master Plan. The detailed information provided by these 24/7/365 counters will enhance SDOT’s ability to measure return on investment in bicycle facilities and help identify locations for new facilities. All of this while encouraging an affordable, healthy mode of travel that reduces greenhouse gas emissions and relieves congestion. The counters upload data once a day at 5am, which is then displayed in daily, weekly, monthly, and annual running totals..
+
+
 %\item \textbf{Quantitatively characterize the bike ridership growth trend in the past three years}
 %\item \textbf{Continuous vs. Categorical}
 %save for later:  When other factors were held fixed, a 43\% to 50\% increase in ridership could be expected as the temperature doubled; however, the temperature had a negative effect when it was higher than 28$^{\circ}$C and humidity was greater than 60\%. 
@@ -412,18 +423,19 @@ developed a statistical model that attempts to predict daily bicycle counts from
 and procedures we used to collect and process the raw datasets (including both bike counts and weather variables), as well as the statistical tools used for bike count modeling (including linear regression, general linearized model, Gaussian Additive Mixture model, and ARIMA time series analysis). 
 
 \section{Study Location}
-The bike facility of interest is the Fremont Bridge in the City of Seattle. The Fremont bridge crosses the Lake Washington Ship Canal and links the Fremont with the Queen Ann neighbourhood. The reason for picking Fremont bridge as our study location is: 1) A permanent, automatic bike counter is installed at the Fremont bridge, which provides continuous bike counts; 2) As opposed to other recreational facilities, the Fremont Bridge represents one of the busiest utilitarian facility in the City of Seattle, which is the subject of this thesis; 3) The bike counter on Fremont bridge was first installed in October 2012, the earliest site among the nine bike counters in Seattle, and therefore provides a rich dataset of a little more than 3 years; 4) It's relatively close to the University of Washington, and connects the northen part of Seattle to its downtown area. 5) It captures a substantial amount of bicycle traffic due to its status as one of only five facilities that carry bicyclists across the canal separating the northern and southern halves of Seattle.
+The bike facility of interest is the Fremont Bridge in the City of Seattle. The Fremont bridge crosses the Lake Washington Ship Canal and links the Fremont with the Queen Ann neighbourhood. The reason for picking Fremont bridge as our study location is: 1) A permanent, automatic bike counter is installed at the Fremont bridge, which provides continuous bike counts; 2) the Fremont Bridge represents one of the busiest utilitarian facility in the City of Seattle; 3) The bike counter on Fremont bridge was first installed in October 2012, the earliest site among the nine bike counters in Seattle, and therefore provides a rich dataset of a little more than 3 years; 4) It's relatively close to the University of Washington, and connects the northern part of Seattle to its downtown area. 5) It captures a substantial amount of bicycle traffic due to its status as one of only five facilities that carry bicyclists across the canal separating the northern and southern halves of Seattle.
 
 SDOT has nine bike counters (four of which also count pedestrians) located on neighborhood greenways, multi-use trails, at the Fremont  Bridge and on SW Spokane Street. The counters help create a ridership baseline that can be used to assess future years and make sure the right amount of resources are invested so that the goal of quadrupling ridership by 2030 could be achieved~\cite{SDOT_BMP15}
 
-While only 3 percent of downtown Seattle‚Äôs 200,000 daily commuters now bicycle, the number of bike commuters has increased 18 percent since 2010, according to a survey done for the Downtown Seattle Association~\cite{}, the city‚Äôs Department of Transportation and King County Metro.
+Another important reason to study Fremont Bridge is the recent trend that more and more commuters choose to bike to work. While only 3 percent of downtown Seattle's 200,000 daily commuters now bicycle, the number of bike commuters has increased 18 percent since 2010, according to a survey done for the Downtown Seattle Association~\cite{downtown2013}. A good understanding of the factors that impact their biking decision is valuable to further promote bicycling. 
+
 
 \section{Data collection, processing and description}
 \label{sec:data}
 
 \subsection{Bike Count Data}
 Bicycle counts were collected at Fremont bridge continuously by the City of Seattle using an in-sidewalk counter manufactured by EcoCounter (see Figure~\ref{fig:ecoCounter}). When a bicycle passes over an induction loop embedded in the sidewalk on either side of the Fremont Bridge, the counter
-registers the bicycle. Data from this equipment has been used in a wide range of studies, and when operating properly, the absolute error of these counters has been shown to be below 4\%~\cite{Nordback09}. Bicyclists may legally choose to ride in the roadway instead of the sidewalk, and would thus not be detected by the counter. However, we believe these crossings are rare at this location due to the design of the facility, which directs bicyclists to enter the sidewalk, and from our own experience riding and observing other riders. The counters upload data once a day at 5 am, which is then aggregated into 15 minute intervals by the City of Seattle, and are made available to the public via the City of Seattle's data portal \cite{City-of-Seattle:aa,City-of-Seattle:ab}.
+registers the bicycle. Data from this equipment has been used in a wide range of studies, and when operating properly, the absolute error of these counters has been shown to be below 4\%~\cite{Nordback09}. Bicyclists may legally choose to ride in the roadway instead of the sidewalk, and would thus not be detected by the counter. However, we believe these crossings are rare at this location due to the design of the facility, which directs bicyclists to enter the sidewalk, and from our own experience riding and observing other riders. The counters collects data 24/7/365, and upload data once a day at 5 am, which is then aggregated into 15 minute intervals by the City of Seattle, and are made available to the public via the City of Seattle's data portal~\cite{City-of-Seattle:aa,City-of-Seattle:ab}.
 
 \begin{figure*}
    \includegraphics[width=1\textwidth]{figures/FremontBikeEcoCounter.jpg} 
@@ -431,7 +443,7 @@ registers the bicycle. Data from this equipment has been used in a wide range of
   \label{fig:ecoCounter}
 \end{figure*}
 
-The bike count data used in this study cover a period of three years spanning from October 31, 2012 to October 30, 2015. The continuous bike count data is aggregated into daily counts. Note that in the literature, there is also studies on bike count modeling using hourly bike count. However, the daily bike counts are favored in this study because: 1) it carries less autocorrelation than the hourly data; 2) it's intuitive and simple to interprate, 3) we believe for bicyclists commuting to work, they make the decision of riding based on the daily weather, as opposed to the recreational riders is more likely to make deicions on a hourly basis. 
+The bike count data used in this study cover a period of three years spanning from October 31, 2012 to October 30, 2015. The continuous bike count data is aggregated into daily counts. Note that in the literature, there is also studies on bike count modeling using hourly bike count. However, the daily bike counts are favored in this study because: 1) it carries less autocorrelation than the hourly data; 2) it's intuitive and simple to interpret, 3) we believe for bicyclists commuting to work, they make the decision of riding based on the daily weather, as opposed to the recreational riders is more likely to make decisions on a hourly basis. 
 
 \subsection{Weather Data}
 Weather data are collected by a variety of sources and are aggregated by Forecast.io. These data are available through the company's web services API \cite{The-Dark-Sky-Company:aa}. Historical daily summaries are available for a range of weather variables including several specifically important to our model such as precipitation, daily minimum and maximum temperatures, sunrise, and sunset, etc.
@@ -1206,9 +1218,43 @@ Last but not least, the predicative performance of the ARIMA model is evaluated 
 
 \chapter{Multiple Locations Analysis}
 
-In this section, we extend our findings in previous chapters and investigate the impact of various weather variables and seasonal factors on the use of bike facilities in multiple locations: Burke-Gilman Trail, Elloitt Bay, I-90 Bridge, Seattle Bridge and Fremont Bridge. Note that the Fremont Bridge is included for the purpose of comparison. This chapter first describes the five locations and their main functionality. Different patterns of the bike volumes are then revealed by examining the data. Finally, the bike data is fitted using Poisson model and the results are interpreted.
+In this section, we extend our study in previous chapters to other bicycle locations with automatic counter in Seattle. The bike counters on different locations provide valuable information about the patterns of cycling in Seattle and allows more accurate benchmarking for goals to increase cycling as set forth in the Bicycle Master Plan. The goal of this section is to find out how different bike facilities respond to the same weather and seasonal variables, and identify their unique travel patterns. To achieve this, five bike facilities distributed in important bicycle network of Seattle are considered, and all of them have contiguous period of reliable data. To approximate a good representative of the bike behavior of Seattle, data in the past two years (from January 1, 2014 to December 31, 2015) are used in the model. Different patterns of the bike travel behavior are revealed by closely examining the data. Finally, a Poisson model is fitted for each location, and results are interpreted via simulation.
 
 \section{Locations Overview}
+
+This study utilizes cyclist count data from 5 automatic counting stations in the City of Seattle: Fremont Bridge, West Seattle Bridge, Elliott Bay Trail, I-90 Bridge and the Burke-Gilman Trail. These five locations are distributed on the existing Citywide Bicycle Network in different neighborhoods, which represents a network of “all ages and abilities” bicycle facilities with comfortable separation from motor vehicles. All five facilities are multi-use trail that allows two-way, off-street pedestrian and bicycle use~\cite{SDOT_BMP15}. They all equipped with the automatic, inductive loop bicycle counters to provide accurate bike counts. The locations are listed in Table~\ref{tbl:locationd} and shown in the map in Figure~\ref{fig:5locations}. Note that there seems to be three recreational facilities according to the official location description (Elliott, I-90 and BGT). However, by analyzing the data we will later find out the true travel pattern (whether recreational or utilitarian) for each of the five locations.
+
+To shed light on the bicycling behavior, we first plot five sites' count data over the past two years. As is shown in Figure~\ref{fig:5locations_time}, the Fremont Bridge has a much higher daily bike traffic when compared to other facilities. This confirms the impression of Fremont Bridge being one of the busiest cycling locations in Seattle. The rest four appear to have similar bike volume. All five locations exhibit a seasonal pattern (peak in the summer and low in the winter) as well as day-to-day count variation. The daily variation is possibly due to different usage pattern of recreational and utilitarian cyclists. Figure~\ref{fig:distribution5} depicts the distribution of cycle counts for each of the five locations. It is observed that none of them follows a perfect Poisson or Normal distribution. The BGT and I-90 seems to concentrate in low daily counts, while the other three facilities show a relative wide spectrum of daily counts. In latter discussion, a Poisson model will be used to fit the data for all sites mainly because of its simplicity as well as the ease of direct interpretation. 
+
+\begin{table}
+ \centering 
+  \caption{Five Locations with bike counters} 
+\small
+\begin{tabular}{ c | c } 
+\hline 
+  Name & Location \\ 
+\hline
+  Fremont Bridge & Fremont Bridge  \\
+  Seattle Bridge & South Spokane Street Bridge  \\
+  Elliott & Elliott Bay Trail in Myrtle Edwards Park  \\ 
+  I90 & Mountains to Sound Trail west of I-90 Bridge \\ 
+  BGT & Burke Gilman Trail north of NE 70th St\\ 
+\hline 
+\end{tabular} 
+\label{tbl:locationd}
+\end{table} 
+
+\begin{figure*}
+  \includegraphics[width=1\textwidth]{figures/5sites/5locations} 
+ \caption{Five bike counter facilities on map}
+ \label{fig:5locations}
+\end{figure*}
+
+\begin{figure*}
+  \includegraphics[width=1\textwidth]{figures/5sites/5location_time} 
+ \caption{Bike counts for five locations}
+ \label{fig:5locations_time}
+\end{figure*}
 
 \begin{figure*}
   \includegraphics[width=1\textwidth]{figures/5sites/distribution5} 
@@ -1216,13 +1262,23 @@ In this section, we extend our findings in previous chapters and investigate the
  \label{fig:distribution5}
 \end{figure*}
 
-\section{Bike Volume Comparison}
+
 
 \section{Model Results}
 For each of the five locations, a Poisson model is fitted with the same explanatory variables:
 \texttt{TempMax}, \texttt{TempMaxSq}, \texttt{Holiday}, \texttt{PrecipProb}, \texttt{Weekend}, \texttt{UW} and \texttt{Daylight}. The coefficient estimates as well as goodness-of-fit results are summarized in Table~\ref{tbl:multilocations}.
 
-Without exception, all the proposed explanatory variables have significant impact on the daily bike volumes. The temperature variable has a nonlinear relationship with bike counts, which is indicated by the significance of coefficients for both \texttt{TempMax} and second order term \texttt{TempMaxSq}. Out of the five locations, the I-90 facility is most effected by the precipitation probability \texttt{PrecipProb}. With 10\% increase in \texttt{PrecipProb}, it is expected to have an approximately 8.3\% decrease in daily bike traffic, while for Fremont Bridge, the amount of change in \texttt{PrecipProb} only results in a 4\% decrease. This could be due to the fact that the I-90 bridge have fast-moving motor traffic and riding in a raining day on such road-way condition might be possibly perceived as dangerous by many commuters. The seasonal factor \texttt{Weekend} and \texttt{Holiday} provide a lot of insight to the nature of different bike facilities. It is shown that both \texttt{Weekend} and \texttt{Holiday} have postive impact on the daily bike traffic on Fremont Bridge, Seattle Bridge and Elliott Bay, and negative impact on I-90 and the Burke-Gillman Trail. This confirms that the former three are mainly utilitarian, while the latter two are recreational. Among them, the Fremont Bridge is most sensitive these two factors: there is 50\% less bike traffic on weekends than weekdays, and 40\% less on holidays than non-holidays. This is consistent with the fact that Fremont Bridge serves as the major corridor connecting northern Seattle with downtown Seattle. Other seasonal factors such as UW in session (\texttt{UW}) and daylight hour (\texttt{Daylight}) both have a positive impact on bike traffic for all five sites. For BGT, there is a 9\% increase when UW is in session compared to otherwise, while there is a 8\% increase in bike counts with 1 hour increase in daily daily light hour. Goodness-of-fit results are also provided in Table~\ref{tbl:multilocations} in terms of AIC, log-likelihood and deviance. The Poisson model finds the best fit on the Seattle Bridge with smallest AIC and deviance, and the highest log likelihood. This could be due to the fact there is least overdispersion in the bike count data of Seattle Bridge when compared to other sites, as suggested in Figure~\ref{fig:distribution5}. Counterfactual simulations are further conducted to visualize the impact of different factors (See Figure~\ref{fig:Sim_precip}-Figure~\ref{fig:Sim_wknd}). It is especially helpful to depict the nonlinear relationship between temperature and bike counts, whose interpretation is not straightforward because of the second order term. 
+Without exception, all the proposed explanatory variables have significant impact on the daily bike volumes. Precipitation has a clearly negative association with increased daily bike ridership. For I-90, with a $0.1$ increase in \texttt{PrecipProb}, it is expected to have the largest 8.3\% decrease in daily bike traffic, while for Fremont Bridge, the same amount of change only results in a 4\% decrease. In terms of absolute number, BGT has the biggest drop for unit increase in the precipitation probability (as is shown in Figure~\ref{fig:Sim_temp_precip}-(a)), possibly due to its highly recreational usage. %This could be due to the fact that the I-90 bridge have fast-moving motor traffic and riding in a raining day on such road-way condition might be possibly perceived as dangerous by many commuters. 
+
+
+The temperature variable has a nonlinear relationship with bike counts, which is indicated by the significance of coefficients for both \texttt{TempMax} and second order term \texttt{TempMaxSq}. With the help of counterfactual simulation, Figure~\ref{fig:Sim_temp_precip}-(b) depicts the nonlinear relationship between temperature and bike traffic. There is generally a positive impact on bike ridership when max temperature increases. However, when it is higher than 80 degree, there is a reduction in bike volumes for all five sites. Counterfactual simulations are further conducted to visualize the impact of max temperature on daily bike volume. The nonlinear ``leveling off'' in counts at very high temperatures is well captured, as is shown in Figure~\ref{fig:Sim_temp_precip}-(b). In addition, the Burke-Gilman trail has the fastest declining rate possibly due to its recreational nature: people tends to be more sensitive to high temperature than commuting trips. 
+
+
+The seasonal factor \texttt{Weekend} and \texttt{Holiday} provide a lot of insight to the nature of different bike facilities. It is shown that both \texttt{Weekend} and \texttt{Holiday} have positive impact on the daily bike traffic on Fremont Bridge, Seattle Bridge and Elliott Bay, and negative impact on I-90 and the Burke-Gilman Trail. This suggest that the former three are mainly utilitarian, while the latter two are recreational. However, according to the description in Table~\ref{tbl:locationd}, Elliott Bay Trail was originally designed as a recreational facility. This finding from data indicates as time changes, more and more commuting cyclists now take route of the Elliott Bay trail and therefore change its traffic pattern. The Fremont Bridge is most sensitive to these two factors: there is 50\% less bike traffic on weekends than weekdays, and 40\% less on holidays than non-holidays. The absolute number of difference in bike counts is approximately 1600 and 1200 respectively, as suggested by Figure~\ref{fig:Sim_wknd} and Figure~\ref{fig:Sim_holiday}. This is consistent with the fact that Fremont Bridge serves as the major corridor connecting northern Seattle with downtown Seattle. Another interesting findings is that Fremont not only have the highest amount of commuting bicyclists during weekdays, it also has arguably the largest recreational traffic during weekends and holidays. Also, since the Burke-Gilman trail is directly connected, they have similiar average amount of bike counts at weekends and holidays when other factors are held the same. In effect, the Fremont Bridge becomes a recreational facility during weekends and holidays. 
+
+Other seasonal factors such as UW in session (\texttt{UW}) and daylight hour (\texttt{Daylight}) both have a positive impact on bike traffic for all five sites. As is shown in Figure~\ref{fig:Sim_UW}, there is not much difference in absolute bike counts for BGT, Elliott Bay, I-90 and Seattle Bridge whether UW is in session or not. However, there is a significant increase in bike counts on the Fremont Bridge when UW is in session. This suggests that a lot of UW students/staff use Fremont Bridge to commute from and to school. At the same time, BGT is most sensitive to the daylight length, showing a 8\% increase in bike counts with 1 hour increase in daily daily light hour. In addition, we also try to use the categorical substitute \texttt{Season} for \texttt{daylight}, which represents the more traditional calendar-based seasonality notion. It is observed in Figure~\ref{fig:Sim_season} that bike counts on Fremont bridge peaks in summer and decreases significantly in winter. Also, there are normally there are more people riding bikes during spring and summer than fall and winter across five locations. 
+
+Goodness-of-fit results are also provided in Table~\ref{tbl:multilocations} in terms of AIC, log-likelihood and deviance. The Poisson model finds the best fit on the Seattle Bridge with smallest AIC and deviance, and the highest log likelihood. This could be due to the fact there is least overdispersion in the bike count data of Seattle Bridge when compared to other sites, as suggested in Figure~\ref{fig:distribution5}. 
 
 
 \begin{table}
@@ -1262,68 +1318,93 @@ Num. obs.      & 730           & 730           & 699           & 720           &
 \end{table}
 
 
+% \begin{figure*}
+%   \centering
+%   \includegraphics[width=0.6\textwidth]{figures/5sites/Sim_temp} 
+%  \caption{Effect of temperature on counts for five locations, with shaded 95\% confidence region. }
+%  \label{fig:Sim_temp}
+% \end{figure*}
+
+% \begin{figure*}
+%   \centering
+%     \includegraphics[width=0.6\textwidth]{figures/5sites/Sim_precip} 
+%     \label{fig:Sim_precip}
+%   \caption{Effect of precipitation on counts for five locations, with shaded 95\% confidence region. }
+% \end{figure*}
+
+\begin{figure*}[t!]
+    \centering
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{figures/5sites/Sim_precip1} 
+        \caption{(a)}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{figures/5sites/Sim_temp} 
+        \caption{(b)}
+    \end{subfigure}
+    \caption{Effect of precipitation (a) and temperature (b) on counts for five locations, with shaded 95\% confidence region.}
+    \label{fig:Sim_temp_precip}
+\end{figure*}
+
 \begin{figure*}
-  \centering
-    \includegraphics[width=0.6\textwidth]{figures/5sites/Sim_precip} 
-    \label{fig:Sim_precip}
-  \caption{The Impact of Precipitation Probability in 5 locations }
+  \includegraphics[width=1\textwidth]{figures/5sites/Sim_wknd} 
+ \caption{Effect of weekend on counts for five locations, with 95\% confidence region. }
+ \label{fig:Sim_wknd}
+\end{figure*}
+
+\begin{figure*}
+  \includegraphics[width=1\textwidth]{figures/5sites/Sim_ho} 
+ \caption{Effect of holiday on counts for five locations, with 95\% confidence region.}
+ \label{fig:Sim_holiday}
 \end{figure*}
 
 
 \begin{figure*}
-  \centering
-  \includegraphics[width=0.6\textwidth]{figures/5sites/Sim_temp} 
- \caption{The Impact of TemperatureMax in 5 locations }
- \label{fig:Sim_temp}
+  \includegraphics[width=1\textwidth]{figures/5sites/Sim_UW} 
+ \caption{The Impact of UW in session on counts for 5 locations, with 95\% confidence region. }
+ \label{fig:Sim_UW}
 \end{figure*}
-
 
 \begin{figure*}
   \centering
   \includegraphics[width=0.5\textwidth]{figures/5sites/Sim_daylight} 
- \caption{The Impact of Daylight in 5 locations }
+ \caption{The Impact of daylight hour on counts for 5 locations, with shaded 95\% confidence region.}
  \label{fig:Sim_daylight}
 \end{figure*}
 
 \begin{figure*}
   \includegraphics[width=1\textwidth]{figures/5sites/Sim_season} 
- \caption{The Impact of Season in 5 locations }
+ \caption{The Impact of calendar-based seasons on counts for 5 locations. }
  \label{fig:Sim_season}
 \end{figure*}
-
-\begin{figure*}
-  \includegraphics[width=1\textwidth]{figures/5sites/Sim_UW} 
- \caption{The Impact of whether University is in session in 5 locations }
- \label{fig:Sim_UW}
-\end{figure*}
-
-\begin{figure*}
-  \includegraphics[width=1\textwidth]{figures/5sites/Sim_wknd} 
- \caption{The Impact of Weekend and Holiday in 5 locations}
- \label{fig:Sim_wknd}
-\end{figure*}
-
-\begin{figure*}
-  \includegraphics[width=0.2\textwidth]{figures/5sites/Sim_trend} 
- \caption{Cylcling Trend from Jan,2013 to Dec,2014 in 5 locations }
- \label{fig:Sim_trend}
-\end{figure*}
+% \begin{figure*}
+%   \includegraphics[width=0.2\textwidth]{figures/5sites/Sim_trend} 
+%  \caption{Cylcling Trend from Jan,2013 to Dec,2014 in 5 locations }
+%  \label{fig:Sim_trend}
+% \end{figure*}
 
 % ========== Chapter 7
 
 \chapter{Conclusion}
 
-Cycling is now becoming an increasingly important mode in a comprehensive transportation system for its physical, social, environmental and economic benefits. The city of Seattle has a vision to design and implement bicycle facilities that are safe and appropriate for riders of all ages and abilities. To achieve this goal, it's crucial for the government stakeholders, policy makers and transportation planners to understand the factors that could drive the bike demand and their predicative impact on bike travel behaviour. This thesis seeks to contribute to our limited and opaque knowledge on this topic.
+Cycling is now becoming an increasingly important mode in a comprehensive transportation system for its physical, social, environmental and economic benefits. The city of Seattle has a vision to design and implement bicycle facilities that are safe and appropriate for riders of all ages and abilities. To achieve this goal, it's crucial for the government stakeholders, policy makers and transportation planners to understand the factors that could drive the bike demand and their impact on bike travel behaviour. This thesis seeks to contribute to our limited and opaque knowledge on this topic.
 
+%  The detailed information provided by these 24/7/365 counters will enhance SDOT’s ability to measure return on investment in bicycle facilities and help identify locations for new facilities. 
 
-The first contribution of this work is to thoroughly investigate the relationship between daily bicycle ridership with a set of key variables, including weather conditions and seasonal factors. The bike count data is continuously collected at the Fremont Bridge in Seattle for the past three years. It is joined with the daily weather conditions and other seasonal variables to form a rich modeling data set. A systematic analysis is conducted to identify explanatory variables and their appropriate forms should be included in the final model. A regression model is then proposed to adequately capture the relationship between various factors and bike counts. This study, like similiar studies on this topic, confirms that weather conditions and seasonal factors have important impact on bike volumes. The maximum daily temperature and precipitation probability is found to have the most significant effect on bicycle traffic counts. Holiday and Weekend are found to have negative impact on daily ridership. This could be explained by the fact that the bike facility under consideration is mainly utilitarian and less bike traffic is expected during holidays and weekend. With UW in session, more bike traffic will be expected possibly due to the facility's proximity to the University of Washington. Daylight hour, which serves as an indicator of the seasonality, takes account for the variations observed in different seasons. The model coefficients are reported in Table~\ref{tbl:modelresult_weather}-\ref{tbl:modelresult_interaction}, as well as visually interpreted in Figure~\ref{fig:smooth}-\ref{fig:interact}.
+% All of this while encouraging an affordable, healthy mode of travel that reduces greenhouse gas emissions and relieves congestion. 
 
-One of the major contributions of this work however lies in the nonlinear relationship between temperature/precipitation and bike count which is explicitly modelled and accounted for using the general additive mixture (GAM) model. The squared temperature which is commonly used in the literature can be straightforwardly justified by the smooth function of temperature obtained by the GAM model. In addition, a piecewise linear model for the precipitation probability is recommended by the GAM model. This results confirms that extreme high temperature could reduce bike volumes. It also suggests that utilitarian bikers commuting on Fremont Bridge are likely to be insensitive to rainfall unless the raining probability is very high.
+The first contribution of this work is to thoroughly investigate the relationship between daily bicycle ridership with a set of key variables, including weather conditions and seasonal factors. The bike count data is continuously collected at the Fremont Bridge in Seattle for the past three years. It is joined with the daily weather conditions and other seasonal variables to form a rich modeling data set. A systematic analysis is conducted to identify candidate explanatory variables and their appropriate forms of transformation that should be included in the final model. A regression model is then proposed to adequately capture the relationship between various factors and bike counts. This study, like similiar studies on this topic, confirms that weather conditions and seasonal factors have important impact on bike volumes. The maximum daily temperature and precipitation probability is found to have the most significant effect on bicycle traffic counts. Holiday and weekend indicators are found to have negative impact on daily ridership. This could be explained by the fact that the bike facility under consideration is mainly utilitarian and less bike traffic is expected during holidays and weekend. With UW in session, more bike traffic will be expected possibly due to the facility's proximity to the University of Washington. Daylight hour, which serves as an indicator of the seasonality, takes account for the variations observed in different seasons. The model coefficients are reported in Table~\ref{tbl:modelresult_weather}-\ref{tbl:modelresult_interaction}, as well as visually interpreted in Figure~\ref{fig:smooth}-\ref{fig:interact}.
 
-With the exception of~\cite{Gallop:2012aa,Nosal:2014aa}, no other known research has studied the autocorrelation patterns in the bike count data. This research offers an ARIMA-type time series analysis model to account for the autocorrelation in the daily bike volumes, whereas hourly autocorrelation is considered in~\cite{Gallop:2012aa,Nosal:2014aa}. The proposed model is used to predict future bike volumes and its predicative performance is evaluated using the train-test framework. One potential use of the ARIMA model is to assist planners by predicting potential bike traffic fluctuation in case of inclement weather and special events, therefore better accomodate the choices cyclists make under such conditions. 
+One of the major contributions of this work however lies in the discussion on nonlinear relationship between temperature/precipitation and bike count. It is explicitly modelled and accounted for using the general additive mixture (GAM) model. The squared temperature, which is commonly used in the literature, can be straightforwardly justified by the smooth function of temperature obtained by the GAM model. By incorporating the high order non-linear terms, the leveling off in counts at high temperature is well captured as is shown in the counterfactual simulations Figure~\ref{fig:temp}. In addition, a piecewise linear model for the precipitation probability is recommended by the GAM model. It suggests that utilitarian bikers commuting on Fremont Bridge are likely to be insensitive to rainfall unless the raining probability is very high.
 
-Future research directions include a further investigation on the relationship between built environment and bike ridership. Factors such as facility accessibility and bike network connectivity are expected to have significant impact on people's choice of cycling. A study on this could potentially shed light to future planning of the bike facilities and funding allocation. Also, while control of the weather and seasons are admittedly beyond the scope of policy makers,
-this research does suggest that planners and policy makers may want to develop strategies that help mitigate the impacts of the natural environment during the winter months. In other words, the delta between warm dry days and cold wet days should be treated as the opportunity frontier. Future research could focus on determining what, if any, programmatic or built interventions could ameliorate unfavorable cold- and wet-weather bicycling conditions.
+With the exception of~\cite{Gallop:2012aa,Nosal:2014aa}, no other known research has studied the autocorrelation patterns in the bike count data. This research offers an ARIMA-type time series analysis model to account for the significant autocorrelation identified in the daily bike volumes. Note that there are previous works that have considered the hourly autocorreltion case in~\cite{Gallop:2012aa,Nosal:2014aa}. The proposed model is used to predict future bike volumes and its predicative performance is evaluated using the train-test framework. The proposed ARIMA model could be used to assist planners by predicting potential bike traffic fluctuation in case of inclement weather and special events, therefore better accomodate the choices cyclists make under such conditions. 
+
+Last but not least, a multi-location study is conducted to investigate the seasonal patterns and the effect of weather across five bike facilities in Seattle - Fremont Bridge, Seattle Bridge, Elliott Bay, I-90 Bridge, and the Burke-Gilman trail, which consists of both utilitarian and recreational purpose facilities. Results were generally in accordance with prior research on the Fremont Bridge. Weather conditions, such as temperature and precipitation, have similiar effect on all five sites, although the recreational facilities are shown to be more sensitive to weather conditions than utilitarian ones. Seasonal factors, however, such as weekend and holiday indicators, show distinct impact patterns on utilitarian and recreational facilities. Such findings can be used to help determine the composition of users of a particular facilities and therefore provide better infrastructure planning and program design. 
+
+Future research directions include a further investigation on the relationship between built environment and bike ridership. Factors such as facility accessibility and bike network connectivity are expected to have significant impact on people's choice of cycling. A study on this could potentially shed light to future planning of the bike facilities and funding allocation. Also, while control of the weather and seasons are admittedly beyond the scope of policy makers, this research does suggest that planners and policy makers may want to develop strategies that help mitigate the impacts of the natural environment during the winter months. In other words, the delta between warm dry days and cold wet days should be treated as the opportunity frontier. Future research could focus on determining what, if any, programmatic or built interventions could ameliorate unfavorable cold- and wet-weather bicycling conditions.
 
 
 %
@@ -1340,15 +1421,6 @@ this research does suggest that planners and policy makers may want to develop s
  
 % ========== Appendix A
  
-%\chapter{Where to find the files}
- 
-
-%\vita{Jim Fox is a Software Engineer with UW Information Technology at the University of Washington.
-%His duties do not include maintaining this package.  That is rather
-%an avocation which he enjoys as time and circumstance allow.
-
-%He welcomes your comments to {\tt fox@uw.edu}.
-%}
 
 
 \end{document}
