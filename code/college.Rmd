@@ -1,0 +1,462 @@
+---
+title: "College Survey 2014 summary"
+author: "weiran"
+date: "June 21, 2016"
+output: html_document
+---
+
+
+```{r,message=FALSE,echo=FALSE,warning=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(grid)
+library(gridExtra)
+library(lubridate)
+library(tigerstats)
+
+setwd("C:\\Users\\weiran\\Documents\\HHSurvey\\college")
+
+```
+
+#Data cleannig
+this section read data and change the type of data
+
+```{r,warning=FALSE}
+
+# read data
+df.person<- read.csv("1_PSRC_College_PersonDataset_2015-1-23_V1-3.csv")
+df.trip<- read.csv("2_PSRC_College_TripDataset_2015-1-23_v2-1_LINKED.csv")
+
+
+cols <- c("college")
+df.trip[,cols] <- data.frame(apply(df.trip[cols], 2, as.factor))
+levels(df.trip$college) <- c("Bellevue.C","Everett.C", "Green River.C", "Seattle.C", "U.W")
+
+cols1 <- c("college")
+df.person[,cols1] <- data.frame(apply(df.person[cols1], 2, as.factor))
+levels(df.person$college) <- c("Bellevue.C","Everett.C", "Green River.C", "Seattle.C", "U.W")
+
+df.live <- df.person %>%
+  select(personID=personid,live,h_district_name,h_districtnum,home_cnty)
+
+df <- df.trip %>%
+  mutate(mode=as.factor(mode),
+         vehicle=as.factor(vehicle)) %>%
+  mutate(traveldate = dmy(as.character(traveldate))) %>%
+  mutate(d_purpose = as.factor(d_purpose),
+         o_purpose = as.factor(o_purpose)) %>%
+  mutate(trip_commute = ifelse((o_purpose==1 & d_purpose==2)|
+                                 (o_purpose==2 & d_purpose ==1),
+                               1,0)) %>%
+  left_join(df.live,by='personID') %>%    #join person dataset variable
+  mutate(add_commute=ifelse(live==2,'off campus','on campus')) %>%
+  mutate(trip_commute=as.factor(trip_commute),
+         add_commute=as.factor(add_commute)) %>%
+  mutate(home_cnty = as.factor(home_cnty)) 
+
+
+
+levels(df$home_cnty) <- c('King','Kitsap','Pierce','Snohomish','Other WA cnty','Outside WA')
+
+```
+
+## Data describe
+this describe the sample size of the data among college and campus\\
+
+campus code
+1	Seattle campus
+2	Bothell campus
+3	Tacoma campus
+4	North Seattle College
+5	Seattle Central College
+6	South Seattle College (Main Campus)
+7	Main campus
+8	Enumclaw campus
+9	Kent campus
+10	Downtown Auburn Center
+11	Main campus
+12	North campus
+13	Online only - I never go to campus
+14	South Seattle College (Georgetown Campus)
+15	Seattle Vocational Institute
+
+```{r,warning=FALSE}
+table(df.trip$college)
+table(df.person$college)
+table(df.person$campus)
+```
+## 1 Mode choice
+mode code:
+1	Drove alone
+3	Drove/rode with people not in household
+4	Motorcycle/moped/scooter
+5	Vanpool
+6	Bicycle
+7	Walk, jog, or wheelchair
+8	Bus (public transit)
+9	Train (rail and monorail)
+10	Ferry or water taxi
+11	Streetcar
+13	Taxi or other hired car service (e.g. Lyft, Uber)
+14	Paratransit
+16	Airplane or helicopter
+15	Private bus or shuttle
+17	Other (e.g. skateboard, kayak, motor home, etc.)
+
+
+```{r,warning=FALSE}
+rowPerc(xtabs(~df$mode))
+rowPerc(xtabs(~df[df$trip_commute==1,]$mode)) #commute trip modeshare
+
+
+ggplot(df, aes(x=factor(mode)))+ geom_bar()+
+  facet_grid(college~.,scale="free")
+
+#commute trip modeshare
+ggplot(df[df$trip_commute==1,], aes(x=factor(mode)))+ geom_bar()+
+  facet_grid(college~.,scale="free")
+
+```
+## Trips per day, total  and by purpose
+
+
+```{r,warning=FALSE}
+# trips stat summary
+df.tripstat<- df.trip %>%
+  mutate(traveldate=dmy(as.character(traveldate))) %>%
+  distinct()%>%
+  group_by(college,traveldate) %>%
+  summarise(totaltrip.coldate = mean(total_trip))
+
+# box plot for daily trips made by college. Senseless to summarize total trips, 
+#since for each school different number of students are sampled
+ggplot(df.tripstat,aes(college,totaltrip.coldate)) + geom_boxplot() + ylab('average daily trips made by each student')
+# # box plot for each person each day
+ggplot(df.trip,aes(x=college,y=total_trip))+geom_boxplot()+
+  geom_hline(aes(yintercept=mean(total_trip, na.rm=T)),  
+             color="red", linetype="dashed", size=1)
+
+df.trippurpose <- df%>%
+  group_by(college,d_purpose) %>%
+  summarise(numtrips=n())
+  
+ggplot(df.trippurpose,aes(d_purpose,numtrips)) + geom_bar(stat='identity') +
+  facet_grid(college~.,scale="free") + xlab('trip purpose') + ylab('num. of trips') 
+
+
+```
+
+##3. trip length summary
+purpose code
+
+1	Go home/to dorm
+2	Go to school (e.g. go to class, go to tutoring)
+3	Go to work/job
+4	Go to other work-related place (e.g. meeting, second job, delivery)
+5	Go grocery shopping
+6	Go to other shopping (e.g. mall, pet store)
+7	Go to medical appointment (e.g. doctor, dentist)
+8	Conduct personal business (e.g. bank, post office)
+9	Drop off/pick up someone (e.g. drop off friend at bus stop)
+10	Go exercise (e.g. gym, walk, jog, bike ride)
+11	Go to restaurant to eat/get take-out
+12	Attend social event (e.g. visit with friends, family, co-workers)
+13	Attend recreational event (e.g. movies, sporting event)
+14	Go to religious/community/volunteer activity
+15	Transfer to another mode of transportation (e.g. change from ferry to bus)
+16	Other
+17	Go to school-related activity
+
+```{r,warning=FALSE}
+
+# Trip length/distance frequency and overall
+ggplot(df,aes(trip_dur_reported)) +geom_histogram(colour="black", fill="white") +
+  geom_vline(aes(xintercept=mean(trip_dur_reported, na.rm=T)),  
+             color="red", linetype="dashed", size=1)+
+  # facet_grid(college~.,scales='free_y') + 
+  xlim(0,150) + xlab('trip length (in minutes)') + ylab('frequency')
+
+
+# trip length by mode
+
+# trip length by purpose
+ggplot(df,aes(as.factor(d_purpose),trip_dur_reported)) + geom_boxplot() +
+  # facet_grid(college~.,scales='free_y') + 
+  # scale_y_log10()+
+  ylim(0,75) + 
+  ylab('trip length (in minutes)') + xlab('trip purpose')
+
+# commute trip length by college
+ggplot(df[df$trip_commute==1,],aes(college,trip_dur_reported)) + geom_boxplot() +
+  geom_hline(aes(yintercept=mean(trip_dur_reported, na.rm=T)),  
+             color="red", linetype="dashed", size=1)+
+  ylim(0,75) + 
+  ylab('trip length (in minutes)') + xlab('college')
+
+ggplot(df[df$trip_commute==1,],aes(college,gdist)) + geom_boxplot() +
+  geom_hline(aes(yintercept=mean(gdist, na.rm=T)),  
+             color="red", linetype="dashed", size=1)+
+  ylim(0,30) + 
+  ylab('trip distance (miles)') + xlab('college')
+
+# distinct start and destination
+# df.destinfo can be used to define commuters/non-commuters.
+df.destinfo <- df.trip %>%
+  select(place_start,place_end) %>%
+  group_by(place_start,place_end) %>%
+  summarise(cnt = n()) %>%
+  # group_by(place_start) %>%
+  ungroup() %>%
+  arrange(desc(cnt)) %>%
+  filter(place_end == 'HOME (OFF-CAMPUS)')  
+```
+
+```{r,warning=FALSE}
+
+```
+
+```{r,warning=FALSE}
+
+```
+
+
+## 4. VMT per day per person
+```{r,warning=FALSE}
+#clean
+df<- df%>%
+  filter(mode!=16)#exclude flight trips
+levels(df$h_district_name)[levels(df$h_district_name)==""] <- NA
+
+# by college
+df4.1 <- df %>%
+  filter(driver==1,mode!=10) %>%
+  group_by(personID,college) %>%
+  summarise(vmtperday = sum(gdist)/n_distinct(traveldate))
+
+ggplot(df4.1,aes(college,vmtperday)) + geom_boxplot() +
+  geom_hline(aes(yintercept=mean(vmtperday, na.rm=T)),  
+             color="red", linetype="dashed", size=1)+
+  scale_y_continuous(breaks = seq(0,50,5),limits = c(0,50))+
+  ylab('VMT per person per day') + xlab('college')
+
+# by commuter
+
+df4.2 <- df %>%
+  filter(driver==1,trip_commute==1) %>%
+  group_by(personID,college) %>%
+  summarise(vmtperday = sum(gdist)/n_distinct(traveldate))
+
+ggplot(df4.2,aes(college,vmtperday)) + geom_boxplot() +
+  geom_hline(aes(yintercept=mean(vmtperday, na.rm=T)),  
+             color="red", linetype="dashed", size=1)+
+  scale_y_continuous(breaks = seq(0,40,5))+
+  ylab('VMT of commuting per person per day ') + xlab('college')
+
+
+```
+
+#5. Time of day travel distribution for different schools vs 
+
+```{r,warning=FALSE}
+# regiondal distributions (hist of departure time by time of day)
+df5 <- df %>%
+  select(time_start_hhmm,college,cnty_start,cnty_end,trip_commute) %>%
+  mutate(time_start = hm(as.character(time_start_hhmm))) %>%
+  mutate(hour=hour(time_start),minute=minute(time_start)) %>%
+  mutate(time=hour+minute/60) %>%
+  mutate(cnty_start=as.factor(cnty_start),
+         cnty_end=as.factor(cnty_end))
+class(df5$time) <- 'POSIXct'
+
+# by school
+ggplot(df5,aes(time)) + geom_histogram(aes(fill=college)) +
+  scale_x_datetime(labels=date_format("%S:00")) +
+  xlab('departure time') + ylab('histogram') + 
+  facet_grid(college~.,scales='free_y')
+
+# by county start?
+levels(df5$cnty_start) <- c('King','Kitsap',
+                            'Pierce','Snohomish',
+                            'Other WA cnty',
+                            'Outside WA')
+ggplot(df5,aes(time)) + geom_histogram(aes(fill=cnty_start)) +
+  scale_x_datetime(labels=date_format("%S:00")) +
+  xlab('departure time') + ylab('histogram') + 
+  facet_grid(cnty_start~.,scales='free_y')
+
+```
+
+## 6. Commute times by home location 
+
+
+```{r,warning=FALSE}
+# (h_district_name)
+df6 <- df %>%
+  filter(trip_commute==1) %>%
+  select(trip_dur_reported,h_district_name,college)
+
+ggplot(df6,aes(h_district_name,
+               trip_dur_reported)) +
+  # geom_point()+
+  # stat_summary(fun.data = "mean_cl_boot", colour = "red", size = .8)+
+  geom_dotplot(binaxis="y",binwidth = .5,stackdir = "center") + 
+  stat_summary(fun.data = "mean_cl_boot", colour = "red", size = .8)+
+  xlab('home district') +ylim(0,150) +
+  ylab('trip time (in min)')+ 
+  facet_grid(college~.,scales='free_y')
+
+```
+
+## 7. carshare data vs. 2014 regional results
+
+```{r,warning=FALSE}
+df.person_c<- df.person%>%
+  filter(!is.na(carshare_car2go))
+
+car2go<- df.person_c%>%
+  group_by(carshare_car2go)%>%
+  summarise(Freq = n(),Freqw = sum(expwt))%>%
+  mutate(Percent =percent(round(Freq/sum(Freq),digit=3)),Percent_w = percent(round(Freqw/sum(Freqw),digit=3)),
+         member = carshare_car2go)
+
+zipcar<-  df.person_c%>%
+  group_by(carshare_zipcar)%>%
+  summarise(Freq = n(),Freqw = sum(expwt))%>%
+  mutate(Percent =percent(round(Freq/sum(Freq),digit=3)),Percent_w = percent(round(Freqw/sum(Freqw),digit=3)),
+         member = carshare_zipcar)
+
+relayrides<- df.person_c%>%
+  group_by(carshare_relayrides)%>%
+  summarise(Freq = n(),Freqw = sum(expwt))%>%
+  mutate(Percent =percent(round(Freq/sum(Freq),digit=3)),Percent_w = percent(round(Freqw/sum(Freqw),digit=3)),
+         member = carshare_relayrides)
+
+other <- df.person_c%>%
+  group_by(carshare_other)%>%
+  summarise(Freq = n(),Freqw = sum(expwt))%>%
+  mutate(Percent =percent(round(Freq/sum(Freq),digit=3)),Percent_w = percent(round(Freqw/sum(Freqw),digit=3)),
+         member = carshare_other)
+dontknow<- df.person_c%>%
+  group_by(carshare_dontknow)%>%
+  summarise(Freq = n(),Freqw = sum(expwt))%>%
+  mutate(Percent =percent(round(Freq/sum(Freq),digit=3)),Percent_w = percent(round(Freqw/sum(Freqw),digit=3)),
+         member = carshare_dontknow)
+
+none<-df.person_c%>%
+  group_by(carshare_none)%>%
+  summarise(Freq = n(),Freqw = sum(expwt))%>%
+  mutate(Percent =percent(round(Freq/sum(Freq),digit=3)),Percent_w = percent(round(Freqw/sum(Freqw),digit=3)),
+         member = carshare_none)
+
+type=c(rep("car2go",2),rep("zipcar",2),rep("relayrides",2),rep("other",2),rep("dontknow",2),rep("carshare",2))
+carshare<-rbind(car2go[,-c(1,2,3)],relayrides[,-c(1,2,3)],zipcar[,-c(1,2,3)],none[,-c(1,2,3)],dontknow[,-c(1,2,3)],other[,-c(1,2,3)])
+carshare<- cbind(carshare,type)
+carshare
+
+ggplot(df.person,aes(college,fill=factor(carshare_none))) +  geom_bar(position='dodge') +  xlab('home district') + ylab('carshare usage') +
+  scale_fill_discrete(name='car share',labels=c('Member','Not member'))
+
+```
+
+## 8. Transit pass ownership and usage vs. region
+
+
+```{r,warning=FALSE}
+# transit percentage
+rowPerc(xtabs(~df.person$transitpay_orca))
+rowPerc(xtabs(~df.person$transitpay_cash))
+rowPerc(xtabs(~df.person$transitpay_upass))
+# 
+# df_8 <- df.person %>%
+#   mutate(transitpay_upass=as.factor(ifelse(is.na(transitpay_upass),0,1))) %>%
+# 
+ggplot(df.person,aes(college,fill=factor(transitpay_upass))) + geom_bar(position='dodge') + 
+  scale_fill_discrete(name='transit pass',labels=c('No','Yes'))
+
+```
+
+## 9. Parking pass ownership and lot usage by district or school
+
+
+```{r,warning=FALSE}
+df9 <- df.person %>%
+  filter(!is.na(parking_pass)) %>%
+  mutate(parking_pass=as.factor(ifelse(parking_pass==1,'Yes','No'))) %>%
+  mutate(live=as.factor(ifelse(live==1,'on campus','off campus')))
+
+ggplot(df9[!is.na(df9$parking_pass),],aes(college,fill=parking_pass)) + geom_bar(position='dodge') 
+
+```
+
+## 10. walk/bike/transit frequency
+
+
+```{r,warning=FALSE}
+df10 <- df.person %>%
+  mutate(transit_freq=as.factor(transit_freq),bike_freq=as.factor(bike_freq),walk_freq=as.factor(walk_freq)) 
+
+rowPerc(xtabs(~df.person$walk_freq))
+rowPerc(xtabs(~df.person$transit_freq))
+rowPerc(xtabs(~df.person$bike_freq))
+
+# walk freq.
+
+ggplot(df.person,aes(as.factor(walk_freq))) + geom_bar(aes(fill=as.factor(walk_freq))) + 
+  facet_grid(college~.,scales='free_y') + 
+  xlab('Walk frequency (1-7:from high to low)') + ylab('counts') + 
+  ggtitle('Walk freq. by college')
+
+# transit freq.
+ggplot(df10,aes(transit_freq)) + geom_bar(aes(fill=transit_freq)) + 
+  facet_grid(college~.,scales='free_y') + 
+  xlab('transit frequency (1-7:from high to low)') + ylab('counts') + 
+  ggtitle('transit freq. by college')
+
+# bike freq.
+ggplot(df10,aes(bike_freq)) + geom_bar(aes(fill=bike_freq)) +
+  facet_grid(college~.,scales='free_y') + 
+  xlab('bike frequency (1-7:from high to low)') + ylab('counts') + 
+  ggtitle('bike freq. by college')
+
+```
+## 11. driver's license vs region over all and by age groups (what is driver's license ownership of 
+
+
+```{r,warning=FALSE}
+# 18-24 old at UW main campus vs 18-24 at a community college, vs 18-24 year in the region over all)
+df11 <- df.person %>%
+  filter(!is.na(license)) %>%
+  mutate(license=as.factor(ifelse(license==1,'Yes','No'))) %>%
+  mutate(age_group = ifelse(age==1,'16-17',
+                            ifelse(age %in% c(2,3,4), '18-24','>25')))
+
+ggplot(df11,aes(college,fill=license)) + geom_bar(position = 'dodge') + facet_grid(age_group~.,scales = 'free_y')
+ggplot(df11,aes(age_group,fill=license)) + geom_bar(position = 'dodge') 
+  
+```
+
+## 12. taxi_type vs. region (regular cab vs. uber/lyft for college students vs. region)
+
+
+```{r,warning=FALSE}
+df12 <- df %>%
+  filter(!is.na(taxi_type)) %>%
+  mutate(taxi_type = as.factor(ifelse(taxi_type==1,'regular','uber/lyft'))) 
+
+ggplot(df12,aes(college,fill=taxi_type)) + geom_bar(position='dodge') + ylab('taxi count')
+
+```
+
+
+
+```{r,warning=FALSE}
+
+```
+
+
+
+```{r,warning=FALSE}
+
+```
